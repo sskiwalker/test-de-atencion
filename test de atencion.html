@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Test de Atención</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .question {
+      font-size: 18px;
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .yes { background-color: #4caf50; color: white; }
+    .no { background-color: #f44336; color: white; }
+    .start, .restart {
+      background-color: #2196f3;
+      color: white;
+    }
+    .result {
+      font-size: 20px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧠 ¿Tu atención está de vacaciones?</h1>
+    <div id="quiz">
+      <p>Este test te ayudará a detectar señales de TDA o dificultades de concentración. ¡Vamos!</p>
+      <button class="start" onclick="startQuiz()">Empezar test</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      "¿Te distraes con facilidad, incluso cuando algo es importante?",
+      "¿Te cuesta terminar lo que empiezas?",
+      "¿Pierdes cosas como llaves, celular o ideas?",
+      "¿Evitas tareas que requieren mucha concentración?",
+      "¿Te cuesta seguir instrucciones largas?",
+      "¿Sientes que tu mente salta de un tema a otro?",
+      "¿Olvidas cosas que acabas de leer o escuchar?",
+      "¿Te cuesta organizar tu tiempo o tus tareas?",
+      "¿Interrumpes a otros sin querer?",
+      "¿Te aburres muy rápido si algo no te interesa?"
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    function startQuiz() {
+      document.getElementById("quiz").innerHTML = `
+        <div class="question">${questions[current]}</div>
+        <button class="yes" onclick="answer(true)">Sí</button>
+        <button class="no" onclick="answer(false)">No</button>
+      `;
+    }
+
+    function answer(isYes) {
+      if (isYes) score++;
+      current++;
+      if (current < questions.length) {
+        document.getElementById("quiz").innerHTML = `
+          <div class="question">${questions[current]}</div>
+          <button class="yes" onclick="answer(true)">Sí</button>
+          <button class="no" onclick="answer(false)">No</button>
+        `;
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      let message = "";
+      if (score <= 3) {
+        message = "🧘‍♂️ Mente zen. Tu enfoque está en modo pro.";
+      } else if (score <= 6) {
+        message = "🤹‍♀️ Enfocado pero caótico. A veces te cuesta, pero lo manejas.";
+      } else {
+        message = "🐿️ Ardilla distraída. Tu atención necesita un GPS.";
+      }
+
+      document.getElementById("quiz").innerHTML = `
+        <div class="result">${message}</div>
+        <p>Tu puntaje: ${score} de ${questions.length}</p>
+        <button class="restart" onclick="restart()">Volver a empezar</button>
+      `;
+      current = 0;
+      score = 0;
+    }
+
+    function restart() {
+      startQuiz();
+    }
+  </script>
+</body>
+</html>
