@@ -278,9 +278,9 @@ footer{border-top:1px solid var(--line);padding:30px 0 108px;font-size:12.5px;co
 .float svg{width:31px;height:31px;color:#04220f}
 
 /* ---------- animación ---------- */
-.rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
-.rv.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+.js .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.js .rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.js .rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
 
 /* ---------- desktop ---------- */
 @media(min-width:760px){
@@ -701,6 +701,8 @@ footer{border-top:1px solid var(--line);padding:30px 0 108px;font-size:12.5px;co
   var PRECIO   = '$40.000';
   /* ============================================ */
 
+  document.documentElement.classList.add('js');
+
   var $  = function(s,c){ return (c||document).querySelector(s); };
   var $$ = function(s,c){ return Array.prototype.slice.call((c||document).querySelectorAll(s)); };
 
@@ -889,6 +891,8 @@ footer{border-top:1px solid var(--line);padding:30px 0 108px;font-size:12.5px;co
       });
     }, { threshold: .12 });
     $$('.rv').forEach(function(el){ io.observe(el); });
+    // red de seguridad: nada queda invisible si el observer no alcanza a disparar
+    setTimeout(function(){ $$('.rv').forEach(function(el){ el.classList.add('in'); }); }, 2500);
   } else {
     $$('.rv').forEach(function(el){ el.classList.add('in'); });
   }
