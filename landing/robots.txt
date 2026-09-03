@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://EJEMPLO.cl/sitemap.xml
+Sitemap: https://rrmotors-landing.pages.dev/sitemap.xml

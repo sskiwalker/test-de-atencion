@@ -12,6 +12,7 @@ sin build, sin dependencias, sin JavaScript externo.
 | `404.html` | Página de error, servida automáticamente por Cloudflare Pages |
 | `_headers` | Cabeceras de seguridad y caché para Cloudflare Pages |
 | `robots.txt` / `sitemap.xml` | SEO — apuntar al dominio real antes de publicar |
+| `og-rrmotors.jpg` | Imagen 1200x630 que se ve al compartir el enlace |
 | `PROMPT-LANDING-RRMOTORS.md` | El prompt con el que se generó, para regenerar o iterar |
 
 ## Qué hace la página
@@ -32,9 +33,11 @@ sin build, sin dependencias, sin JavaScript externo.
 1. **WhatsApp** — variable `WHATSAPP` al inicio del `<script>` en `index.html`.
 2. **Píxeles** — descomenta el bloque `TRACKING` del `<head>` y pega el ID de
    Google Analytics 4 y el de Meta Pixel.
-3. **Dominio** — reemplaza `https://EJEMPLO.cl` en `index.html` (canonical y
-   Open Graph), `robots.txt` y `sitemap.xml`.
-4. **Imagen social** — sube `og-rrmotors.jpg` (1200x630) y apunta `og:image`.
+3. **Dominio** — ya apunta a `https://rrmotors-landing.pages.dev`. Si Cloudflare te
+   asigna otro subdominio, cámbialo en `index.html` (canonical y Open Graph),
+   `robots.txt` y `sitemap.xml`.
+4. **Imagen social** — `og-rrmotors.jpg` (1200x630) ya viene incluida y enlazada.
+   Reemplázala cuando tengas una foto real del taller o del scanner.
 5. **Testimonios** — la sección está retirada a propósito. Se agrega cuando haya
    reseñas reales y verificables (hay un comentario marcando el lugar).
 6. **Ciudad y horario** — actualiza `Santiago y alrededores` y el horario en el
@@ -42,7 +45,19 @@ sin build, sin dependencias, sin JavaScript externo.
 
 ## Desplegar en Cloudflare Pages
 
-### Opción A — conectado a este repositorio (recomendado)
+### Opción A — subida directa (lo más rápido, sin GitHub)
+
+```bash
+npm install -g wrangler     # una sola vez
+wrangler login              # abre el navegador, autorizas y listo
+cd rrmotors-landing
+wrangler pages deploy . --project-name=rrmotors-landing
+```
+
+Al terminar imprime la URL `https://rrmotors-landing.pages.dev`. Para publicar
+cambios después, vuelves a correr solo el último comando.
+
+### Opción B — conectado a un repositorio de Git
 
 1. Entra a **Cloudflare Dashboard → Workers & Pages → Create → Pages →
    Connect to Git**.
@@ -52,14 +67,6 @@ sin build, sin dependencias, sin JavaScript externo.
    - **Build command:** *(vacío)*
    - **Build output directory:** `/`
 4. **Save and Deploy**. Cada `git push` a `main` publica una nueva versión.
-
-### Opción B — subida directa con Wrangler
-
-```bash
-npm install -g wrangler
-wrangler login
-wrangler pages deploy . --project-name=rrmotors-landing
-```
 
 ### Dominio propio
 
