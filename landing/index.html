@@ -212,13 +212,6 @@ input::placeholder{color:#5a5a66}
 
 /* ---------- calculadora ---------- */
 .calc{background:linear-gradient(180deg,var(--card2),#0e0e12);border:1px solid var(--line);border-radius:18px;padding:22px 18px}
-.calcrow{display:grid;gap:10px;align-items:center}
-.calccell{background:#0b0b0e;border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
-.calccell label{margin-bottom:9px}
-.calccell .out{font-family:var(--disp);font-size:clamp(20px,5.6vw,26px);color:#fff}
-.calccell.tot{border-color:var(--red);background:linear-gradient(180deg,rgba(225,6,0,.14),transparent)}
-.calccell.tot .out{color:var(--red2)}
-.op{text-align:center;font-family:var(--disp);font-size:22px;color:var(--mut)}
 .rangewrap{margin-top:6px}
 input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;padding:0;border:0;height:26px}
 input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:99px;background:linear-gradient(90deg,var(--red),#3a1010)}
@@ -226,28 +219,64 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 input[type=range]::-moz-range-track{height:5px;border-radius:99px;background:#3a1010}
 input[type=range]::-moz-range-thumb{width:22px;height:22px;border:4px solid var(--red);background:#fff;border-radius:50%;cursor:pointer}
 
-/* ---------- antes/despues ---------- */
-.ba{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);aspect-ratio:4/3;background:#111;cursor:ew-resize;user-select:none;touch-action:none}
-.ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.ba .after{clip-path:inset(0 0 0 50%)}
-.ba .handle{position:absolute;top:0;bottom:0;left:50%;width:3px;background:var(--red);box-shadow:0 0 18px rgba(225,6,0,.9);pointer-events:none}
-.ba .handle::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:var(--red);border:3px solid #fff}
-.tagba{position:absolute;bottom:10px;font-size:10.5px;font-weight:800;letter-spacing:.14em;padding:5px 10px;border-radius:6px;background:rgba(0,0,0,.75);border:1px solid var(--line)}
-.tagba.l{left:10px}.tagba.r{right:10px;border-color:var(--green);color:var(--green)}
+/* ---------- calculadora detallada ---------- */
+.calcgrid{display:grid;gap:16px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.panel>h3{font-size:13px;letter-spacing:.06em;color:var(--mut);margin-bottom:14px}
+.panel>h3 b{color:var(--red2);font-family:var(--disp);font-size:15px;margin-right:7px}
+.pricein{display:flex;align-items:center;gap:10px;background:#0b0b0e;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px}
+.pricein span{font-family:var(--disp);font-size:22px;color:var(--mut)}
+.pricein input{border:0;background:transparent;padding:0;font-family:var(--disp);font-size:clamp(22px,6vw,28px);color:#fff;font-variant-numeric:tabular-nums}
+.pricein input:focus{border:0}
+.gcat{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--red2);font-weight:800;margin:16px 0 8px}
+.gcat:first-of-type{margin-top:0}
+.item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.item:last-child{border-bottom:0}
+.itemlab{flex:1;display:flex;align-items:center;gap:11px;cursor:pointer;min-width:0;font-size:inherit;font-weight:400;letter-spacing:normal;text-transform:none;color:inherit;margin:0}
+.chk{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.box{width:20px;height:20px;flex:0 0 20px;border-radius:6px;border:1.5px solid #3b3b47;display:grid;place-items:center;transition:.15s}
+.box svg{width:12px;height:12px;color:#fff;opacity:0;transition:.15s}
+.item.on .box{background:var(--red);border-color:var(--red)}
+.item.on .box svg{opacity:1}
+.chk:focus-visible+.box{outline:2px solid var(--red2);outline-offset:2px}
+.item .nm{font-size:13.5px;line-height:1.3;color:var(--mut);transition:color .15s}
+.item.on .nm{color:var(--txt);font-weight:600}
+.item .amt{width:104px;flex:0 0 104px;text-align:right;font-size:14px;padding:7px 9px;border-radius:8px;font-variant-numeric:tabular-nums;background:#0b0b0e;border:1.5px solid transparent;color:var(--mut)}
+.item.on .amt{color:#fff;border-color:var(--line)}
+.item .amt:focus{border-color:var(--red);color:#fff}
+.sum{position:static;background:linear-gradient(180deg,var(--card2),#0c0c10);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.srow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;font-size:14px}
+.srow span{color:var(--mut)}
+.srow b{font-variant-numeric:tabular-nums;font-size:16px;white-space:nowrap}
+.srow.big{border-top:1px solid var(--line);margin-top:6px;padding-top:14px}
+.srow.big span{color:var(--txt);font-family:var(--disp);text-transform:uppercase;font-size:13px;letter-spacing:.02em}
+.srow.big b{font-family:var(--disp);font-size:clamp(21px,5.4vw,26px);color:var(--red2)}
+.srow.ok b{color:var(--green)}
+.bar2{display:flex;height:9px;border-radius:99px;overflow:hidden;margin:14px 0 8px;background:#0b0b0e;border:1px solid var(--line)}
+.bar2 i{display:block;height:100%}
+.bar2 .b1{background:#4a4a58}
+.bar2 .b2{background:linear-gradient(90deg,var(--red),var(--red2))}
+.leg{display:flex;gap:14px;font-size:11.5px;color:var(--mut);flex-wrap:wrap}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.leg i{width:9px;height:9px;border-radius:3px;display:block}
+.offer{margin-top:14px;padding:14px;border-radius:12px;border:1px solid rgba(34,197,94,.4);background:linear-gradient(180deg,rgba(34,197,94,.1),transparent)}
+.offer .lbl{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:#7ff0a5;font-weight:800}
+.offer .val{font-family:var(--disp);font-size:clamp(22px,6vw,28px);color:var(--green);font-variant-numeric:tabular-nums;margin:3px 0 4px}
+.offer p{font-size:12px;color:var(--mut)}
+.roi{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--mut)}
+.roi b{color:#fff}
+
+/* ---------- desabolladura ---------- */
+.dmg{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.dmg:last-child{border-bottom:0}
+.dmg b{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mut);font-weight:700}
+.disc{display:flex;align-items:center;gap:16px;border:1px solid rgba(225,6,0,.45);background:linear-gradient(180deg,rgba(225,6,0,.12),transparent);border-radius:var(--r);padding:18px;flex-wrap:wrap}
+.disc .pct{font-family:var(--disp);font-size:clamp(44px,13vw,62px);color:var(--red2);line-height:.9}
+.disc .pct sub{font-size:.34em;vertical-align:super;bottom:0}
 
 /* ---------- pasos ---------- */
 .step{display:flex;gap:14px;align-items:flex-start;padding:16px;background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
 .step .num{font-family:var(--disp);font-size:26px;color:var(--red);line-height:1;flex:0 0 34px}
-
-/* ---------- testimonios ---------- */
-.tst{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
-.stars{color:#ffb400;font-size:14px;letter-spacing:2px;margin-bottom:9px}
-.tst p{font-size:14.5px;line-height:1.6}
-.who{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
-.av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--red),#5a0400);display:grid;place-items:center;font-weight:900;font-size:14px;flex:0 0 36px}
-.who b{font-size:13.5px;display:block}
-.who small{color:var(--mut);font-size:11.5px}
-.saved{display:inline-block;margin-top:10px;background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.45);color:#7ff0a5;font-size:12px;font-weight:800;padding:5px 11px;border-radius:99px}
 
 /* ---------- faq ---------- */
 details{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:9px;overflow:hidden}
@@ -292,7 +321,9 @@ footer{border-top:1px solid var(--line);padding:30px 0 108px;font-size:12.5px;co
   .grid.c2{grid-template-columns:1fr 1fr}
   .grid.c3{grid-template-columns:repeat(3,1fr)}
   .grid.c5{grid-template-columns:repeat(5,1fr)}
-  .calcrow{grid-template-columns:1fr auto 1fr auto 1.15fr}
+  .calcgrid{grid-template-columns:1.35fr .85fr;align-items:start;gap:22px}
+  .sum{position:sticky;top:76px}
+  .dmgwrap{grid-template-columns:1fr 1fr;gap:26px}
   .capt{padding:34px}
   .bar{display:none}
   .float{display:grid}
@@ -519,59 +550,102 @@ footer{border-top:1px solid var(--line);padding:30px 0 108px;font-size:12.5px;co
 </section>
 
 <!-- ============ CALCULADORA COSTO REAL ============ -->
-<section>
+<section id="calculadora">
   <div class="wrap">
     <div class="center" style="margin-bottom:26px">
       <h2>El <span class="red">costo real</span><br>de tu compra</h2>
-      <p class="sub">El precio que te piden casi nunca es lo que terminas pagando. Mueve la barra y míralo.</p>
+      <p class="sub">El precio que te piden casi nunca es lo que terminas pagando. Marca lo que sospechas y mira el número completo.</p>
     </div>
-    <div class="calc rv">
-      <div class="calcrow">
-        <div class="calccell">
-          <label for="precio">Precio del vehículo</label>
-          <div class="out" id="oPrecio">$12.000.000</div>
-          <div class="rangewrap"><input type="range" id="precio" min="2000000" max="40000000" step="250000" value="12000000" aria-label="Precio del vehículo"></div>
+
+    <div class="calcgrid rv">
+      <div>
+        <div class="panel">
+          <h3><b>1</b>PRECIO QUE TE PIDEN POR EL AUTO</h3>
+          <div class="pricein">
+            <span>$</span>
+            <input id="precio" type="text" inputmode="numeric" value="12.000.000" aria-label="Precio pedido por el vehículo">
+          </div>
+          <div class="rangewrap"><input type="range" id="precioR" min="1000000" max="45000000" step="100000" value="12000000" aria-label="Ajustar precio"></div>
         </div>
-        <div class="op">+</div>
-        <div class="calccell">
-          <label for="repa">Reparaciones detectadas</label>
-          <div class="out" id="oRepa">$1.250.000</div>
-          <div class="rangewrap"><input type="range" id="repa" min="0" max="5000000" step="50000" value="1250000" aria-label="Reparaciones detectadas"></div>
-        </div>
-        <div class="op">=</div>
-        <div class="calccell tot">
-          <label>Inversión estimada total</label>
-          <div class="out" id="oTotal">$13.250.000</div>
-          <p class="mut" style="font-size:11.5px;margin-top:8px">Lo que realmente sale del bolsillo</p>
+
+        <div class="panel" style="margin-top:16px">
+          <h3><b>2</b>¿QUÉ PODRÍA NECESITAR EL AUTO?</h3>
+
+          <p class="gcat">Motor y mecánica</p>
+          <div id="lista-motor"></div>
+          <p class="gcat">Frenos, neumáticos y suspensión</p>
+          <div id="lista-rodado"></div>
+          <p class="gcat">Carrocería y confort</p>
+          <div id="lista-carro"></div>
+
+          <p class="mut" style="font-size:11.5px;margin-top:14px;line-height:1.5">
+            Valores referenciales de mercado en Chile (repuesto alternativo + mano de obra). Puedes editar cualquier monto.
+            El informe de inspección entrega el costo real de <b style="color:#fff">tu</b> vehículo.
+          </p>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid var(--line);flex-wrap:wrap">
-        <p class="bigline" style="flex:1 1 220px">Saber hoy,<br><span class="red">te ahorra mañana.</span></p>
-        <p class="sub" style="flex:1 1 240px;margin:0">Por <b style="color:#fff">$40.000</b> sabes si esas reparaciones existen — y cuánto valen — antes de transferir. Evita sorpresas, pérdidas y malas decisiones.</p>
+
+      <div class="sum">
+        <div class="srow"><span>Precio pedido</span><b id="oPrecio">$12.000.000</b></div>
+        <div class="srow"><span>Reparaciones (<i id="oN" style="font-style:normal">3</i> ítems)</span><b id="oRepa" style="color:var(--red2)">+ $630.000</b></div>
+        <div class="srow big"><span>Costo real</span><b id="oTotal">$12.630.000</b></div>
+
+        <div class="bar2" aria-hidden="true"><i class="b1" id="bar1" style="width:95%"></i><i class="b2" id="bar2" style="width:5%"></i></div>
+        <div class="leg">
+          <span><i style="background:#4a4a58"></i>Precio del auto</span>
+          <span><i style="background:var(--red)"></i><i id="oPct" style="width:auto;height:auto;background:none">5%</i> en reparaciones</span>
+        </div>
+
+        <div class="offer">
+          <div class="lbl">Precio justo a ofrecer</div>
+          <div class="val" id="oJusto">$11.370.000</div>
+          <p>Descuenta del precio pedido lo que vas a tener que invertir. Es tu punto de partida para negociar, con respaldo técnico.</p>
+        </div>
+
+        <div class="roi">
+          La inspección cuesta <b>$40.000</b> — un <b id="oRoi">6%</b> de lo que detectamos en este ejemplo.
+          <span id="oRoiExtra"></span>
+        </div>
+
+        <a class="btn btn-wa" id="calcWa" style="width:100%;margin-top:14px" data-cta="calculadora" target="_blank" rel="noopener">Enviar este cálculo por WhatsApp</a>
+        <p class="privacy" style="margin-top:10px">Te respondemos con la disponibilidad y el valor exacto.</p>
       </div>
-      <div class="center" style="margin-top:18px">
-        <a class="btn btn-wa btn-lg" data-wa data-cta="calculadora" data-msg="Hola RRMotors, estoy evaluando un auto y quiero saber su costo real. ¿Me agendan una inspección?">Quiero saber el costo real de mi auto</a>
-      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:14px;margin-top:24px;flex-wrap:wrap;justify-content:center;text-align:center">
+      <p class="bigline">Saber hoy, <span class="red">te ahorra mañana.</span></p>
     </div>
   </div>
 </section>
 
-<!-- ============ ANTES / DESPUÉS ============ -->
+<!-- ============ DESABOLLADURA Y PINTURA ============ -->
 <section style="background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
   <div class="wrap">
-    <div class="grid c2" style="align-items:center;gap:26px">
+    <div class="grid dmgwrap" style="align-items:start;gap:26px">
       <div class="rv">
         <h2>Desabolladura<br>y pintura <span class="red">incluida</span></h2>
-        <p class="sub">Si el auto tiene golpes, no te quedas con la duda: te entregamos el presupuesto de desabolladura y pintura dentro del mismo informe, sin costo adicional.</p>
-        <p class="sub" style="margin-top:14px">Y si decides repararlo con nosotros, ese trabajo tiene <b style="color:#fff">10% de descuento</b>.</p>
-        <a class="btn btn-red" style="margin-top:18px" data-wa data-cta="pintura" data-msg="Hola RRMotors, el auto que estoy viendo tiene golpes. ¿Me pueden cotizar desabolladura y pintura junto con la inspección?">Cotizar desabolladura</a>
+        <p class="sub">Si el auto tiene golpes, rayones o un panel repintado, no te quedas con la duda: medimos el espesor de la pintura, detectamos qué se repintó y te entregamos el <b style="color:#fff">presupuesto de desabolladura y pintura dentro del mismo informe</b>, sin costo adicional.</p>
+        <p class="sub" style="margin-top:14px">Sirve para dos cosas: bajar el precio de compra, y saber de antemano cuánto cuesta dejarlo impecable.</p>
+        <div class="disc" style="margin-top:20px">
+          <div class="pct">10<sub>%</sub></div>
+          <div style="flex:1 1 200px">
+            <h3 style="margin-bottom:5px">Descuento exclusivo</h3>
+            <p class="sub" style="font-size:13.5px;margin:0">En mantención preventiva o en el trabajo de desabolladura y pintura, si haces la inspección con nosotros.</p>
+          </div>
+        </div>
+        <a class="btn btn-red" style="margin-top:18px" data-wa data-cta="desabolladura" data-msg="Hola RRMotors, el auto que estoy viendo tiene golpes o rayones. ¿Me cotizan desabolladura y pintura junto con la inspección?">Cotizar desabolladura y pintura</a>
       </div>
-      <!-- REEMPLAZAR: pon aquí dos fotos reales de un mismo trabajo, 800x600 -->
-      <div class="ba rv" id="ba" role="group" aria-label="Comparador antes y después">
-        <img class="before" alt="Vehículo antes de la reparación" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='800'%20height='600'%3E%3Crect%20width='800'%20height='600'%20fill='rgb(38,38,44)'/%3E%3Ctext%20x='400'%20y='310'%20fill='rgb(125,125,138)'%20font-family='Arial'%20font-weight='bold'%20font-size='34'%20text-anchor='middle'%3EFOTO%20ANTES%20800x600%3C/text%3E%3C/svg%3E">
-        <img class="after" alt="Vehículo después de la reparación" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='800'%20height='600'%3E%3Crect%20width='800'%20height='600'%20fill='rgb(58,58,66)'/%3E%3Ctext%20x='400'%20y='310'%20fill='rgb(190,190,200)'%20font-family='Arial'%20font-weight='bold'%20font-size='34'%20text-anchor='middle'%3EFOTO%20DESPU%C3%89S%20800x600%3C/text%3E%3C/svg%3E">
-        <div class="handle" id="baHandle"></div>
-        <span class="tagba l">ANTES</span><span class="tagba r">DESPUÉS</span>
+
+      <div class="card rv">
+        <p style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-weight:800;margin-bottom:6px">Referencia de valores</p>
+        <p class="mut" style="font-size:12.5px;margin-bottom:12px">Rangos habituales por trabajo. El presupuesto exacto sale del informe.</p>
+        <div class="dmg"><span>Pulido de rayón superficial</span><b>desde $25.000</b></div>
+        <div class="dmg"><span>Desabolladura sin pintura (1 golpe)</span><b>desde $45.000</b></div>
+        <div class="dmg"><span>Pintura de un panel (puerta, tapabarro)</span><b>desde $90.000</b></div>
+        <div class="dmg"><span>Panel con desabolladura + pintura</span><b>desde $120.000</b></div>
+        <div class="dmg"><span>Parachoque completo</span><b>desde $110.000</b></div>
+        <div class="dmg"><span>Pintura de costado completo</span><b>desde $320.000</b></div>
+        <p class="mut" style="font-size:11.5px;margin-top:14px">Valores referenciales, varían según el daño, el color y el modelo del vehículo.</p>
       </div>
     </div>
   </div>
@@ -592,35 +666,14 @@ footer{border-top:1px solid var(--line);padding:30px 0 108px;font-size:12.5px;co
 </section>
 
 <!-- ============ TESTIMONIOS ============ -->
-<!-- REEMPLAZAR CON TESTIMONIOS REALES antes de publicar. No publiques opiniones inventadas. -->
-<section style="background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
-  <div class="wrap">
-    <div class="center" style="margin-bottom:26px"><h2>Lo que dicen<br>quienes <span class="red">no compraron a ciegas</span></h2></div>
-    <div class="grid c3 rv">
-      <div class="tst">
-        <div class="stars">★★★★★</div>
-        <p>"Iba a comprar igual. El informe mostró fugas de aceite y frenos al límite. Con eso bajé el precio y quedé tranquilo."</p>
-        <span class="saved">Ahorró $900.000</span>
-        <div class="who"><span class="av">C</span><div><b>Carlos M.</b><small>Toyota Yaris 2018</small></div></div>
-      </div>
-      <div class="tst">
-        <div class="stars">★★★★★</div>
-        <p>"El escáner detectó códigos que el vendedor había borrado hace poco. Me salvaron de un problema caro."</p>
-        <span class="saved">No compró ese auto</span>
-        <div class="who"><span class="av">P</span><div><b>Paulina R.</b><small>Hyundai Tucson 2016</small></div></div>
-      </div>
-      <div class="tst">
-        <div class="stars">★★★★★</div>
-        <p>"Llegaron donde estaba el auto, revisaron todo y el mismo día tenía el informe con fotos. Súper claro y sin tecnicismos."</p>
-        <span class="saved">Compró con confianza</span>
-        <div class="who"><span class="av">J</span><div><b>Jorge V.</b><small>Chevrolet Sail 2020</small></div></div>
-      </div>
-    </div>
-  </div>
-</section>
+<!--
+   Sección de testimonios retirada a propósito: solo se publican opiniones reales.
+   Cuando tengas 3 reseñas verificables (nombre, vehículo y resultado concreto),
+   se agregan aquí con el mismo estilo de tarjetas del resto de la página.
+-->
 
 <!-- ============ CÓMO FUNCIONA ============ -->
-<section>
+<section style="background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
   <div class="wrap">
     <div class="center" style="margin-bottom:26px"><h2>Así de <span class="red">simple</span></h2></div>
     <div class="grid c3 rv">
@@ -632,7 +685,7 @@ footer{border-top:1px solid var(--line);padding:30px 0 108px;font-size:12.5px;co
 </section>
 
 <!-- ============ FAQ ============ -->
-<section style="background:var(--bg2);border-top:1px solid var(--line)">
+<section>
   <div class="wrap" style="max-width:760px">
     <div class="center" style="margin-bottom:26px"><h2>Preguntas <span class="red">frecuentes</span></h2></div>
     <div class="rv">
@@ -848,40 +901,133 @@ footer{border-top:1px solid var(--line);padding:30px 0 108px;font-size:12.5px;co
     window.open(url, '_blank', 'noopener');
   });
 
-  /* ---------- calculadora ---------- */
-  var precio = $('#precio'), repa = $('#repa');
+  /* ---------- calculadora detallada ---------- */
+  var ITEMS = {
+    'lista-motor': [
+      ['Fugas de aceite / cambio de sellos', 250000, true],
+      ['Kit de distribución (correa, tensor, bomba)', 280000, false],
+      ['Embrague completo', 450000, false],
+      ['Mantención: aceite, filtros y bujías', 90000, false],
+      ['Batería nueva', 85000, false],
+      ['Sistema de refrigeración (radiador / bomba)', 220000, false]
+    ],
+    'lista-rodado': [
+      ['Pastillas y discos delanteros', 120000, true],
+      ['Frenos traseros', 95000, false],
+      ['Juego de 4 neumáticos', 260000, true],
+      ['Amortiguadores (par)', 180000, false],
+      ['Bujes, rótulas y terminales', 140000, false],
+      ['Alineación y balanceo', 30000, false]
+    ],
+    'lista-carro': [
+      ['Desabolladura y pintura (por panel)', 120000, false],
+      ['Parabrisas', 150000, false],
+      ['Aire acondicionado (carga y sellos)', 90000, false],
+      ['Tapiz y detailing', 80000, false]
+    ]
+  };
+
+  var INSPECCION = 40000;
+  var precioInp = $('#precio'), precioR = $('#precioR');
+
   function clp(n){ return '$' + Math.round(n).toLocaleString('es-CL'); }
-  function calcular(){
-    var p = +precio.value, r = +repa.value;
-    $('#oPrecio').textContent = clp(p);
-    $('#oRepa').textContent   = clp(r);
-    $('#oTotal').textContent  = clp(p + r);
+  function num(s){ var d = String(s).replace(/\D/g,''); return d ? parseInt(d,10) : 0; }
+  function miles(n){ return Number(n).toLocaleString('es-CL'); }
+
+  var check = '<span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M20 6 9 17l-5-5"/></svg></span>';
+
+  Object.keys(ITEMS).forEach(function(id){
+    $('#'+id).innerHTML = ITEMS[id].map(function(it){
+      return '<div class="item' + (it[2] ? ' on' : '') + '">' +
+             '<label class="itemlab"><input type="checkbox" class="chk"' + (it[2] ? ' checked' : '') + '>' + check +
+             '<span class="nm">' + it[0] + '</span></label>' +
+             '<input class="amt" type="text" inputmode="numeric" value="' + miles(it[1]) + '" aria-label="Costo de ' + it[0] + '"></div>';
+    }).join('');
+  });
+
+  function seleccionados(){
+    return $$('.item.on').map(function(el){
+      return { nombre: $('.nm', el).textContent, monto: num($('.amt', el).value) };
+    });
   }
-  precio.addEventListener('input', calcular);
-  repa.addEventListener('input', calcular);
-  var usada = false;
-  [precio,repa].forEach(function(el){
-    el.addEventListener('change', function(){
-      if(!usada){ usada = true; track('uso_calculadora', {}); }
+
+  function calcular(){
+    var precio = num(precioInp.value);
+    var sel = seleccionados();
+    var repa = sel.reduce(function(a, b){ return a + b.monto; }, 0);
+    var total = precio + repa;
+
+    $('#oPrecio').textContent = clp(precio);
+    $('#oRepa').textContent   = (repa ? '+ ' : '') + clp(repa);
+    $('#oN').textContent      = sel.length;
+    $('#oTotal').textContent  = clp(total);
+    $('#oJusto').textContent  = clp(Math.max(0, precio - repa));
+
+    var pct = total ? (repa / total) * 100 : 0;
+    $('#bar1').style.width = (100 - pct) + '%';
+    $('#bar2').style.width = pct + '%';
+    $('#oPct').textContent = (pct < 1 && pct > 0 ? pct.toFixed(1) : Math.round(pct)) + '%';
+
+    if(repa > 0){
+      $('#oRoi').textContent = (INSPECCION / repa * 100 < 1 ? '<1' : Math.round(INSPECCION / repa * 100)) + '%';
+      $('#oRoiExtra').textContent = ' Por cada $1 que pagas, encuentras $' + Math.round(repa / INSPECCION) + ' de argumento para negociar.';
+    } else {
+      $('#oRoi').textContent = '—';
+      $('#oRoiExtra').textContent = ' Marca lo que sospechas del auto para ver el cálculo.';
+    }
+
+    var msg = 'Hola RRMotors 👋 Hice el cálculo en su web:\n\n' +
+      '💰 Precio pedido: ' + clp(precio) + '\n' +
+      (sel.length ? '🔧 Posibles reparaciones:\n' + sel.map(function(s){ return '   • ' + s.nombre + ': ' + clp(s.monto); }).join('\n') + '\n' : '') +
+      '📊 Costo real estimado: ' + clp(total) + '\n\n' +
+      'Quiero agendar la inspección pre-compra para confirmar estas cifras.';
+    $('#calcWa').setAttribute('href', 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg));
+  }
+
+  // marcar / desmarcar (funciona con mouse y con teclado)
+  $$('.chk').forEach(function(c){
+    c.addEventListener('change', function(){
+      c.closest('.item').classList.toggle('on', c.checked);
+      calcular();
     });
   });
-  calcular();
 
-  /* ---------- comparador antes / después ---------- */
-  var ba = $('#ba');
-  if(ba){
-    var after = $('.after', ba), handle = $('#baHandle'), arrastra = false;
-    function mover(x){
-      var r = ba.getBoundingClientRect();
-      var pct = Math.min(100, Math.max(0, ((x - r.left) / r.width) * 100));
-      after.style.clipPath = 'inset(0 0 0 ' + pct + '%)';
-      handle.style.left = pct + '%';
-    }
-    ba.addEventListener('pointerdown', function(e){ arrastra = true; ba.setPointerCapture(e.pointerId); mover(e.clientX); });
-    ba.addEventListener('pointermove', function(e){ if(arrastra) mover(e.clientX); });
-    ba.addEventListener('pointerup',   function(){ arrastra = false; });
-    ba.addEventListener('pointercancel', function(){ arrastra = false; });
-  }
+  // montos editables
+  $$('.amt').forEach(function(inp){
+    inp.addEventListener('focus', function(){
+      var it = inp.closest('.item');
+      it.classList.add('on');
+      $('.chk', it).checked = true;
+      calcular();
+    });
+    inp.addEventListener('input', function(){
+      var v = num(inp.value);
+      inp.value = v ? miles(v) : '';
+      calcular();
+    });
+  });
+
+  // precio: input y slider sincronizados
+  precioInp.addEventListener('input', function(){
+    var v = num(precioInp.value);
+    precioInp.value = v ? miles(v) : '';
+    if(v >= +precioR.min && v <= +precioR.max) precioR.value = v;
+    calcular();
+  });
+  precioR.addEventListener('input', function(){
+    precioInp.value = miles(precioR.value);
+    calcular();
+  });
+
+  var usada = false;
+  $('#calculadora').addEventListener('click', function(){
+    if(!usada){ usada = true; track('uso_calculadora', {}); }
+  });
+  $('#calcWa').addEventListener('click', function(){
+    track('contacto_whatsapp', { origen: 'calculadora_detalle', valor: PRECIO });
+  });
+
+  calcular();
 
   /* ---------- animación al hacer scroll ---------- */
   if('IntersectionObserver' in window){

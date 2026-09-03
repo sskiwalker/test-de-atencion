@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://EJEMPLO.cl/sitemap.xml
