@@ -288,14 +288,15 @@ window.MODEL = (function (D) {
   }
 
   /* ------------------------------------------------------------ Veredicto */
+  // t = como lo diría alguien que sabe · s = lo mismo en palabras de todos los días
   const NIVELES = [
-    { min:200, cls:'n5', t:'240Hz competitivo' },
-    { min:140, cls:'n5', t:'144Hz competitivo' },
-    { min:100, cls:'n4', t:'Muy fluido (100+)' },
-    { min:72,  cls:'n3', t:'Fluido (60-100)' },
-    { min:50,  cls:'n2', t:'Jugable (~60)' },
-    { min:30,  cls:'n1', t:'Justo, baja ajustes' },
-    { min:0,   cls:'n0', t:'No apto' }
+    { min:200, cls:'n5', t:'240Hz competitivo',    s:'Rapidísimo' },
+    { min:140, cls:'n5', t:'144Hz competitivo',    s:'Súper suave' },
+    { min:100, cls:'n4', t:'Muy fluido (100+)',    s:'Muy suave' },
+    { min:72,  cls:'n3', t:'Fluido (60-100)',      s:'Va bien' },
+    { min:50,  cls:'n2', t:'Jugable (~60)',        s:'Se puede jugar' },
+    { min:30,  cls:'n1', t:'Justo, baja ajustes',  s:'Va justo' },
+    { min:0,   cls:'n0', t:'No apto',              s:'No alcanza' }
   ];
   function veredicto(avg, low) {
     const efectivo = Math.min(avg, low / 0.62); // un 1% low malo degrada el veredicto

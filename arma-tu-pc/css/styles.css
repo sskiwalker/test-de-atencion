@@ -263,3 +263,20 @@ ol.pasos li { margin-bottom: 11px; padding-left: 3px; }
 ol.pasos li::marker { color: var(--acc); font-weight: 700; }
 ol.pasos b { color: var(--txt); font-weight: 600; }
 @media (max-width: 620px) { pre.form { font-size: 11px; } }
+
+/* ---------- niveles de detalle: Fácil / Normal / Técnico ---------- */
+.nivel-sel {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap; margin-top: 16px; border-color: var(--acc);
+}
+.nivel-sel h2 { margin: 0 0 3px; }
+.nivel-txt { min-width: 0; flex: 1 1 260px; }
+#nivel-chips .chip { padding: 8px 18px; font-size: 14px; }
+
+/* Qué se ve en cada nivel */
+html[data-nivel="1"] .desde-normal,
+html[data-nivel="1"] .solo-tecnico,
+html[data-nivel="2"] .solo-tecnico { display: none !important; }
+html:not([data-nivel="1"]) .solo-facil { display: none !important; }
+html[data-nivel="1"] .rango { display: none; }
+html[data-nivel="1"] .j-meta.motor { display: none; }

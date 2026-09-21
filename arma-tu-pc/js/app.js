@@ -17,7 +17,8 @@
     build: { cpu:'9800x3d', gpu:'9070', placa:'b650', ram:'d5-16x2', ssd:'990pro', ssdCap:1024, cooler:'pa120se' },
     cfg: { res:'1440p', preset:'alto', rt:'off', ups:'off', fg:false },
     juegos: ['cs2','valorant','fortnite','bo6','apex','cyberpunk','bg3','doomtda','marvelrivals','rust','gta5e','eldenring'],
-    op: { factorChile: Math.round(M.factorChile()), factorUsado: 0.6, gabineteUsd: 60 }
+    op: { factorChile: Math.round(M.factorChile()), factorUsado: 0.6, gabineteUsd: 60 },
+    nivel: 2
   };
   let S = (function () {
     try { const g = JSON.parse(localStorage.getItem(LS)); if (g && g.build && g.cfg) return Object.assign({}, defecto, g); } catch (e) {}
@@ -35,6 +36,7 @@
                     'ssd=' + b.ssd, 'cap=' + b.ssdCap, 'cooler=' + b.cooler,
                     'res=' + c.res, 'preset=' + c.preset, 'rt=' + c.rt, 'ups=' + c.ups];
     if (c.fg) partes.push('fg=1');
+    if (S.nivel !== 2) partes.push('nivel=' + S.nivel);
     // la lista de juegos solo viaja si no es la de por defecto, para no alargar el enlace
     const a = S.juegos.slice().sort().join(','), b2 = defecto.juegos.slice().sort().join(',');
     if (a !== b2) partes.push('j=' + S.juegos.join(','));
@@ -60,6 +62,7 @@
     if (['off', 'rt', 'pt'].indexOf(o.rt) >= 0) S.cfg.rt = o.rt;
     if (M.UPS[o.ups]) S.cfg.ups = o.ups;
     S.cfg.fg = o.fg === '1';
+    if (['1', '2', '3'].indexOf(o.nivel) >= 0) S.nivel = Number(o.nivel);
     if (o.j) {
       const ids = o.j.split(',').filter(id => D.juegos.some(x => x.id === id));
       if (ids.length) S.juegos = ids;
@@ -100,6 +103,29 @@
 
   const juegosSel = () => D.juegos.filter(j => S.juegos.indexOf(j.id) >= 0);
   const opPrecio = () => ({ factorChile: S.op.factorChile, factorUsado: S.op.factorUsado, gabineteUsd: S.op.gabineteUsd });
+
+  /* --------------------------------------------------------------------------
+     Niveles de detalle. La página es una sola: el nivel decide qué columnas y
+     qué secciones se ven, y cambia algunas palabras por otras más llanas.
+     1 Fácil · 2 Normal · 3 Técnico
+     -------------------------------------------------------------------------- */
+  const NIVEL_DESC = {
+    1: 'Sin palabras raras. Eliges procesador y tarjeta gráfica, y te digo si los juegos se van a ver suaves y cuánto cuesta el equipo.',
+    2: 'Lo justo para decidir una compra: FPS, caídas, qué pieza frena a la otra y el precio pieza por pieza.',
+    3: 'Todo el detalle: potencia de cada pieza, milisegundos por fotograma, coeficientes y las fórmulas del cálculo.'
+  };
+  const esFacil = () => S.nivel === 1;
+
+  function aplicarNivel() {
+    document.documentElement.dataset.nivel = String(S.nivel);
+    $$('#nivel-chips .chip').forEach(b => b.classList.toggle('on', Number(b.dataset.nivel) === S.nivel));
+    $('#nivel-desc').textContent = NIVEL_DESC[S.nivel];
+    // Palabras: cada elemento con data-facil guarda su texto original la primera vez.
+    $$('[data-facil]').forEach(n => {
+      if (n.dataset.normal === undefined) n.dataset.normal = n.textContent;
+      n.textContent = esFacil() ? n.dataset.facil : n.dataset.normal;
+    });
+  }
 
   /* ---------------------------------------------------------- selects --- */
   function opt(v, t, sel) { const o = el('option', { value: v }); o.textContent = t; o.selected = sel; return o; }
@@ -209,9 +235,14 @@
       r.forEach(x => cuellos[x.limitante]++);
       const domina = Object.keys(cuellos).sort((a, b) => cuellos[b] - cuellos[a])[0];
       const nombreRes = { '1080p':'1080p', '1440p':'1440p', 'uw1440':'UW 1440p', '4k':'4K' }[S.cfg.res];
-      it.push({ k: nombreRes + ' · ' + S.cfg.preset, v:'<span class="' + v.cls + ' num">' + Math.round(med) + '</span> <small>FPS mediana</small>',
+      it.push({ k: nombreRes + ' · ' + S.cfg.preset,
+                v:'<span class="' + v.cls + ' num">' + Math.round(med) + '</span> <small>' + (esFacil() ? 'FPS típicos' : 'FPS mediana') + '</small>',
                 extra:'el peor de tus juegos: ' + Math.round(r[0].avg) + ' FPS', sep:true });
-      it.push({ k:'Cuello de botella', v:'<span class="' + (domina === 'GPU' ? 'n5' : domina === 'CPU' ? 'n2' : 'n4') + '">' + domina + '</span>',
+      const nombreCuello = esFacil()
+        ? { GPU:'La gráfica', CPU:'El procesador', Equilibrado:'Van parejos' }[domina]
+        : domina;
+      it.push({ k: esFacil() ? 'Qué la frena' : 'Cuello de botella',
+                v:'<span class="' + (domina === 'GPU' ? 'n5' : domina === 'CPU' ? 'n2' : 'n4') + '">' + nombreCuello + '</span>',
                 extra: cuellos[domina] + ' de ' + r.length + ' juegos', sep:true });
     }
     $('#resumen-datos').innerHTML = it.map(x =>
@@ -281,21 +312,24 @@
     const v = M.veredicto(r.avg, r.low);
     const tr = el('tr');
     const j = r.juego;
-    tr.appendChild(el('td', {}, '<span class="j-nombre">' + esc(j.n) + '</span><br><span class="j-meta">' +
+    tr.appendChild(el('td', {}, '<span class="j-nombre">' + esc(j.n) + '</span><br><span class="j-meta motor">' +
       esc(j.cat) + ' · ' + esc(j.motor) + (r.rtNombre ? ' · ' + esc(r.rtNombre) : '') + '</span>'));
     tr.appendChild(el('td', { className:'r' },
       '<span class="fps ' + v.cls + ' num">' + Math.round(r.avg) + '</span>' +
       (r.fg ? '<br><span class="j-meta num">' + Math.round(r.fg) + ' con FG</span>' : '')));
-    tr.appendChild(el('td', { className:'r num' }, String(Math.round(r.low))));
+    tr.appendChild(el('td', { className:'r num desde-normal' }, String(Math.round(r.low))));
     const anchoMax = 240;
     tr.appendChild(el('td', {},
       '<div class="barra ' + v.cls + '"><i style="width:' + Math.min(100, r.avg / anchoMax * 100) + '%"></i></div>' +
       '<span class="rango num">' + Math.round(r.min) + '–' + Math.round(r.max) + ' fps</span>'));
-    tr.appendChild(el('td', {}, '<span class="badge ' + (r.limitante === 'GPU' ? 'gpu' : r.limitante === 'CPU' ? 'cpu' : '') + '">' + r.limitante + '</span>'));
-    tr.appendChild(el('td', {}, '<span class="' + v.cls + '">' + (r.tope ? 'Al tope del juego (' + j.cap + ')' : v.t) + '</span>'));
+    tr.appendChild(el('td', { className:'desde-normal' }, '<span class="badge ' + (r.limitante === 'GPU' ? 'gpu' : r.limitante === 'CPU' ? 'cpu' : '') + '">' + r.limitante + '</span>'));
+    const txtVeredicto = r.tope ? 'Al tope del juego (' + j.cap + ')' : (esFacil() ? v.s : v.t);
+    tr.appendChild(el('td', {}, '<span class="' + v.cls + '">' + txtVeredicto + '</span>'));
     const falta = r.vramNec > r.vramDisp;
-    tr.appendChild(el('td', { className:'r' }, '<span class="badge ' + (falta ? 'alerta' : '') + ' num">' +
+    tr.appendChild(el('td', { className:'r desde-normal' }, '<span class="badge ' + (falta ? 'alerta' : '') + ' num">' +
       r.vramNec.toFixed(1) + '/' + r.vramDisp.toFixed(1) + ' GB</span>'));
+    tr.appendChild(el('td', { className:'r num solo-tecnico j-meta' },
+      r.msGpu.toFixed(1) + ' / ' + r.msCpu.toFixed(1)));
     return tr;
   }
 
@@ -351,11 +385,19 @@
     for (const res of orden) {
       if (resultados[res].sobre60 >= 0.8) {
         clase = nombre[res];
-        extra = resultados[res].sobre100 >= 0.8 ? 'alto refresco (100+ FPS en la mayoría)' : '60 FPS o más en la mayoría, preset Alto';
+        const muyAlto = resultados[res].sobre100 >= 0.8;
+        extra = esFacil()
+          ? (muyAlto ? 'la mayoría de los juegos pasa de 100 FPS: se ve muy suave' : 'la mayoría de los juegos pasa de 60 FPS en calidad Alta')
+          : (muyAlto ? 'alto refresco (100+ FPS en la mayoría)' : '60 FPS o más en la mayoría, preset Alto');
         break;
       }
     }
-    if (!clase) { clase = '1080p con ajustes'; extra = 'ni a 1080p Alto llega a 60 FPS en la mayoría: toca bajar preset o usar reescalado'; }
+    if (!clase) {
+      clase = '1080p con ajustes';
+      extra = esFacil()
+        ? 'no llega a 60 FPS en la mayoría de los juegos: hay que bajar la calidad de imagen'
+        : 'ni a 1080p Alto llega a 60 FPS en la mayoría: toca bajar preset o usar reescalado';
+    }
     const v = M.veredicto(resultados['1080p'].mediana, resultados['1080p'].mediana * 0.7);
     cont.appendChild(el('div', { className:'clase' },
       '<div class="big ' + v.cls + '">' + esc(clase) + '</div><div class="t">' + esc(extra) + '</div>'));
@@ -365,7 +407,7 @@
       const vv = M.veredicto(r.mediana, r.mediana * 0.7);
       grid.appendChild(el('div', { className:'res-cell' },
         '<div class="k">' + nombre[res] + ' · Alto</div><div class="v ' + vv.cls + ' num">' + Math.round(r.mediana) +
-        ' <span style="font-size:11px;color:var(--txt3)">fps mediana</span></div>' +
+        ' <span style="font-size:11px;color:var(--txt3)">' + (esFacil() ? 'FPS típicos' : 'fps mediana') + '</span></div>' +
         '<div class="k">' + Math.round(r.sobre60 * 100) + '% de los juegos sobre 60 · ' + Math.round(r.sobre100 * 100) + '% sobre 100</div>'));
     });
   }
@@ -392,7 +434,7 @@
       const tr = el('tr');
       tr.appendChild(el('td', {}, '<span class="j-nombre">' + esc(f.g.n) + '</span><br><span class="j-meta">' + esc(f.g.uso || '') + '</span>'));
       ['i1080', 'i1440', 'i4k'].forEach(k => tr.appendChild(el('td', { className:'r num' }, f[k].toFixed(0))));
-      tr.appendChild(el('td', { className:'r num' }, f.g.igpu ? 'compartida' : f.g.vram + ' GB'));
+      tr.appendChild(el('td', { className:'r num desde-normal' }, f.g.igpu ? 'compartida' : f.g.vram + ' GB'));
       tr.appendChild(el('td', { className:'r' }, (f.g.igpu ? '—' : '<span class="num">' + usd(f.p.usd) + '</span>' + (f.p.est ? ' <span class="badge est">est.</span>' : ''))));
       tr.appendChild(el('td', { className:'r num' }, f.media ? Math.round(f.media) : '—'));
       tr.appendChild(el('td', { className:'r' }, f.porFps ? '<span class="num ' + (f.porFps <= mejor * 1.15 ? 'n4' : '') + '">' + f.porFps.toFixed(1) + '</span>' : '—'));
@@ -419,11 +461,11 @@
       tr.appendChild(el('td', {}, '<span class="j-nombre">' + esc(f.c.n) + '</span>' + (f.compat ? '' : ' <span class="badge">otra placa</span>')));
       tr.appendChild(el('td', {}, esc(f.c.pl)));
       tr.appendChild(el('td', { className:'r num' }, f.c.c + (f.c.e ? '+' + f.c.e + 'E' : '') + (f.c.smt ? '/' + f.c.c * 2 : '')));
-      tr.appendChild(el('td', { className:'r num' }, f.c.l3Ccd + ' MB' + (f.c.vcache !== 'no' ? ' 3D' : '')));
+      tr.appendChild(el('td', { className:'r num desde-normal' }, f.c.l3Ccd + ' MB' + (f.c.vcache !== 'no' ? ' 3D' : '')));
       tr.appendChild(el('td', { className:'r num' }, f.i.toFixed(1)));
       tr.appendChild(el('td', { className:'r' }, '<span class="num">' + usd(f.p.usd) + '</span>' + (f.p.est ? ' <span class="badge est">est.</span>' : '')));
-      tr.appendChild(el('td', { className:'r num' }, (f.p.usd / f.i).toFixed(1)));
-      tr.appendChild(el('td', {}, '<span class="j-meta">' + esc(f.c.estado || '') + '</span>'));
+      tr.appendChild(el('td', { className:'r num desde-normal' }, (f.p.usd / f.i).toFixed(1)));
+      tr.appendChild(el('td', { className:'desde-normal' }, '<span class="j-meta">' + esc(f.c.estado || '') + '</span>'));
       if (f.c.id === S.build.cpu) tr.classList.add('actual');
       tr.title = 'Probar el ' + f.c.n + ' en tu equipo' + (f.compat ? '' : ' (cambia la placa y la RAM)');
       tr.onclick = () => { S.build.cpu = f.c.id; autoCompatibilizar(); render(); };
@@ -608,6 +650,11 @@
 
   function init() {
     aplicarHash();                      // un enlace compartido manda sobre lo guardado
+    if (!S.nivel) S.nivel = 2;
+    aplicarNivel();
+    $$('#nivel-chips .chip').forEach(b => {
+      b.onclick = () => { S.nivel = Number(b.dataset.nivel); aplicarNivel(); render(); };
+    });
     initSelects(); initChips(); pintarMetodo();
     $('#compartir').onclick = compartir;
 
