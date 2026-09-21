@@ -5,6 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Arma tu PC · rendimiento y precio estimados (sept 2026)</title>
 <meta name="description" content="Cambia componentes y mira al instante qué rinde y cuánto cuesta, juego por juego y por resolución. Sobre los datos del informe de componentes de PC de septiembre 2026.">
+
+<!-- Tarjeta al compartir el enlace (WhatsApp, Telegram, Discord, redes).
+     OJO: og:image y og:url tienen que ser direcciones absolutas; si publicas
+     esto en otro dominio, hay que cambiar las cuatro líneas de abajo. -->
+<link rel="canonical" href="https://sskiwalker.github.io/test-de-atencion/arma-tu-pc/">
+<meta property="og:url" content="https://sskiwalker.github.io/test-de-atencion/arma-tu-pc/">
+<meta property="og:image" content="https://sskiwalker.github.io/test-de-atencion/arma-tu-pc/img/preview.jpg">
+<meta name="twitter:image" content="https://sskiwalker.github.io/test-de-atencion/arma-tu-pc/img/preview.jpg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Arma tu PC">
+<meta property="og:locale" content="es_CL">
+<meta property="og:title" content="Arma tu PC · rendimiento y precio estimados">
+<meta property="og:description" content="Cambia un componente y mira al instante qué rinde y cuánto cuesta. 33 juegos, por resolución, con precios de mercado a septiembre 2026.">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="Arma tu PC: FPS estimados por juego y precio total de la build.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Arma tu PC · rendimiento y precio estimados">
+<meta name="twitter:description" content="Cambia un componente y mira al instante qué rinde y cuánto cuesta, juego por juego.">
+
+<!-- Pantalla de inicio del teléfono y color de la barra del navegador -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="img/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Arma tu PC">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0e1117" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
+
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -16,7 +46,10 @@
         <h1>Arma tu <span>PC</span></h1>
         <p class="sub" style="margin-bottom:16px">Rendimiento y precio estimados, juego por juego · datos del informe de componentes a 21-sep-2026</p>
       </div>
-      <button class="btn sec" id="tema" type="button">Tema claro</button>
+      <div class="acciones">
+        <button class="btn" id="compartir" type="button">Compartir este equipo</button>
+        <button class="btn sec" id="tema" type="button">Tema claro</button>
+      </div>
     </div>
   </div>
 </header>
@@ -217,6 +250,8 @@ FPS     = 1000 / frame,  luego VRAM, PCIe, RAM y tope del juego
     buses, relojes) son datos públicos de fabricante. Estimaciones sin garantía.
   </footer>
 </div>
+
+<div class="aviso-flotante" id="toast" role="status" aria-live="polite"></div>
 
 <script src="js/data.js"></script>
 <script src="js/model.js"></script>

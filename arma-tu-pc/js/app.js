@@ -25,6 +25,79 @@
   })();
   const guardar = () => { try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} };
 
+  /* --------------------------------------------------------------------------
+     El equipo va dentro del enlace. Así, al mandarlo por WhatsApp, el otro abre
+     exactamente la misma configuración en vez de la de por defecto.
+     -------------------------------------------------------------------------- */
+  function estadoAHash() {
+    const b = S.build, c = S.cfg;
+    const partes = ['cpu=' + b.cpu, 'gpu=' + b.gpu, 'placa=' + b.placa, 'ram=' + b.ram,
+                    'ssd=' + b.ssd, 'cap=' + b.ssdCap, 'cooler=' + b.cooler,
+                    'res=' + c.res, 'preset=' + c.preset, 'rt=' + c.rt, 'ups=' + c.ups];
+    if (c.fg) partes.push('fg=1');
+    // la lista de juegos solo viaja si no es la de por defecto, para no alargar el enlace
+    const a = S.juegos.slice().sort().join(','), b2 = defecto.juegos.slice().sort().join(',');
+    if (a !== b2) partes.push('j=' + S.juegos.join(','));
+    return partes.join('&');
+  }
+
+  function aplicarHash() {
+    const h = (location.hash || '').replace(/^#/, '');
+    if (!h || h.indexOf('cpu=') < 0) return false;
+    const o = {};
+    h.split('&').forEach(t => { const i = t.indexOf('='); if (i > 0) o[t.slice(0, i)] = decodeURIComponent(t.slice(i + 1)); });
+    // Todo se valida contra el catálogo: un enlace mal copiado no debe romper nada.
+    const ok = (lista, id) => id && lista.some(x => x.id === id);
+    if (ok(D.cpus, o.cpu)) S.build.cpu = o.cpu;
+    if (ok(D.gpus, o.gpu)) S.build.gpu = o.gpu;
+    if (ok(D.placas, o.placa)) S.build.placa = o.placa;
+    if (ok(D.memoria.kits, o.ram)) S.build.ram = o.ram;
+    if (ok(D.ssds, o.ssd)) S.build.ssd = o.ssd;
+    if (ok(D.coolers, o.cooler)) S.build.cooler = o.cooler;
+    if (D.capacidades.indexOf(Number(o.cap)) >= 0) S.build.ssdCap = Number(o.cap);
+    if (M.RES[o.res]) S.cfg.res = o.res;
+    if (M.CAL.preset[o.preset] !== undefined) S.cfg.preset = o.preset;
+    if (['off', 'rt', 'pt'].indexOf(o.rt) >= 0) S.cfg.rt = o.rt;
+    if (M.UPS[o.ups]) S.cfg.ups = o.ups;
+    S.cfg.fg = o.fg === '1';
+    if (o.j) {
+      const ids = o.j.split(',').filter(id => D.juegos.some(x => x.id === id));
+      if (ids.length) S.juegos = ids;
+    }
+    return true;
+  }
+
+  function guardarEnUrl() {
+    try { history.replaceState(null, '', '#' + estadoAHash()); } catch (e) {}
+  }
+
+  let tToast = null;
+  function toast(txt) {
+    const n = $('#toast');
+    n.textContent = txt; n.classList.add('ver');
+    clearTimeout(tToast); tToast = setTimeout(() => n.classList.remove('ver'), 2600);
+  }
+
+  async function compartir() {
+    guardarEnUrl();
+    const cpu = M.idx(D.cpus, S.build.cpu), gpu = M.idx(D.gpus, S.build.gpu);
+    const p = M.precioBuild(S.build, opPrecio());
+    const lista = juegosSel();
+    let resumenFps = '';
+    if (lista.length) {
+      const med = lista.map(j => M.estimar(j, S.build, S.cfg).avg).sort((a, b) => a - b)[Math.floor(lista.length / 2)];
+      resumenFps = ' · ' + Math.round(med) + ' FPS de mediana a ' + S.cfg.res;
+    }
+    const texto = cpu.n + ' + ' + gpu.n + ' — ' + usd(p.total) + ' (≈ ' + clp(p.clp) + ')' + resumenFps;
+    const url = location.href;
+    if (navigator.share) {
+      try { await navigator.share({ title: 'Arma tu PC', text: texto, url: url }); return; }
+      catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    try { await navigator.clipboard.writeText(texto + '\n' + url); toast('Enlace copiado: ya lo puedes pegar en WhatsApp'); }
+    catch (e) { toast('Copia el enlace desde la barra de direcciones'); }
+  }
+
   const juegosSel = () => D.juegos.filter(j => S.juegos.indexOf(j.id) >= 0);
   const opPrecio = () => ({ factorChile: S.op.factorChile, factorUsado: S.op.factorUsado, gabineteUsd: S.op.gabineteUsd });
 
@@ -113,6 +186,7 @@
     $$('#chips-juegos .chip').forEach(b => b.classList.toggle('on', S.juegos.indexOf(b.dataset.juego) >= 0));
     $('#n-juegos').textContent = S.juegos.length + ' de ' + D.juegos.length;
     pintarCompat(); pintarPrecios(); pintarFps(); pintarClase(); pintarBarra(); pintarRankings();
+    guardarEnUrl();
     destellar('#total-usd', $('#total-usd').textContent);
     destellar('#fps-titulo', $('#fps-titulo').textContent);
     programarReco();
@@ -533,7 +607,9 @@
   }
 
   function init() {
+    aplicarHash();                      // un enlace compartido manda sobre lo guardado
     initSelects(); initChips(); pintarMetodo();
+    $('#compartir').onclick = compartir;
 
     $('#s-cpu').onchange = e => { S.build.cpu = e.target.value; autoCompatibilizar(); render(); };
     $('#s-gpu').onchange = e => { S.build.gpu = e.target.value; render(); };

@@ -15,6 +15,41 @@ Los rankings son interactivos: **un clic en cualquier fila monta esa GPU o esa C
 (si la CPU es de otra plataforma, la placa y la RAM se ajustan solas) y el efecto se ve al tiro en
 la franja de arriba. La fila del componente que tienes puesto va marcada.
 
+## Abrirlo desde el teléfono / mandarlo por WhatsApp
+
+La página es estática y no pide nada a ningún servidor externo, así que funciona igual en el
+navegador integrado de WhatsApp. Lo único que hace falta es que esté publicada en una dirección.
+
+**Publicar con GitHub Pages** (gratis, en el mismo repositorio):
+
+1. La rama con estos archivos tiene que estar en `main` (o elegir esa rama en el paso 2).
+2. En GitHub: **Settings → Pages → Source: “Deploy from a branch”**, rama `main`, carpeta `/ (root)`.
+3. A los dos o tres minutos queda en:
+   `https://sskiwalker.github.io/test-de-atencion/arma-tu-pc/`
+
+Ese es el enlace que se manda por WhatsApp.
+
+**El enlace se ve como tarjeta, no como texto pelado.** Hay etiquetas Open Graph y una imagen de
+previsualización (`img/preview.jpg`, 1200x630) generada con cifras reales del propio modelo, así que
+WhatsApp, Telegram, Discord y redes muestran título, descripción e imagen.
+
+> Si lo publicas en otro dominio hay que cambiar las cuatro direcciones absolutas del `<head>`
+> (`canonical`, `og:url`, `og:image`, `twitter:image`). Están juntas y marcadas con un comentario.
+> Open Graph no admite rutas relativas.
+
+**El enlace lleva tu equipo dentro.** El botón *Compartir este equipo* manda una línea con el
+resumen (CPU, GPU, precio en USD y CLP, FPS de mediana) más una dirección que reconstruye
+exactamente esa configuración al abrirla: componentes, resolución, preset, ray tracing, reescalado
+y los juegos marcados. En el teléfono abre el menú de compartir del sistema; en el computador copia
+el enlace al portapapeles. Un enlace mal copiado no rompe nada: cada valor se valida contra el
+catálogo y lo que no cuadre se ignora.
+
+**Se puede instalar como app.** Hay un `manifest.webmanifest` e iconos, así que “Añadir a pantalla
+de inicio” la deja con su icono y abriéndose a pantalla completa, sin barra de navegador.
+
+Un detalle de compatibilidad: el CSS evita funciones modernas de mezcla de color, que faltan en los
+navegadores integrados de apps en móviles algo antiguos y dejarían fondos en negro.
+
 ## La regla del proyecto: no hay FPS guardados
 
 No existe ninguna tabla del tipo *“RTX 5070 + Cyberpunk 1440p = 80 FPS”*. Lo que se guarda es:
@@ -97,8 +132,10 @@ porque sube el contador pero no la respuesta del juego.
 
 ```
 arma-tu-pc/
-├── index.html          estructura y textos
-├── css/styles.css      estilos (tema oscuro y claro)
+├── index.html              estructura, textos y etiquetas para compartir
+├── manifest.webmanifest    para instalarla en la pantalla de inicio
+├── img/                    imagen de previsualización e iconos
+├── css/styles.css          estilos (tema oscuro y claro)
 └── js/
     ├── data.js         catálogo: specs, precios, juegos y anclas de calibración
     ├── model.js        motor: índices, estimación de FPS, precios, recomendador

@@ -4,6 +4,10 @@
   --txt: #e6edf3; --txt2: #9aa7b8; --txt3: #6b7889;
   --acc: #4ade80; --acc2: #38bdf8; --warn: #fbbf24; --err: #f87171; --est: #a78bfa;
   --n5: #22d3ee; --n4: #4ade80; --n3: #a3e635; --n2: #fbbf24; --n1: #fb923c; --n0: #f87171;
+  /* Versiones translúcidas fijas. Se evita mezclar colores en CSS porque esa
+     función no existe en los navegadores integrados de apps (WhatsApp) en
+     móviles algo antiguos, y ahí el fondo saldría negro. */
+  --acc-suave: rgba(74, 222, 128, .12); --destello: rgba(56, 189, 248, .28);
   --r: 10px; --sombra: 0 1px 3px rgba(0,0,0,.4);
 }
 :root[data-tema="claro"] {
@@ -11,6 +15,7 @@
   --txt: #12181f; --txt2: #4b5866; --txt3: #77869a;
   --acc: #16a34a; --acc2: #0284c7; --warn: #b45309; --err: #dc2626; --est: #7c3aed;
   --n5: #0891b2; --n4: #16a34a; --n3: #65a30d; --n2: #b45309; --n1: #ea580c; --n0: #dc2626;
+  --acc-suave: rgba(22, 163, 74, .10); --destello: rgba(2, 132, 199, .20);
   --sombra: 0 1px 3px rgba(16,24,40,.08);
 }
 * { box-sizing: border-box; }
@@ -219,7 +224,7 @@ select { min-width: 0; max-width: 100%; }
 /* filas que se pueden montar en el equipo con un clic */
 #t-gpu tbody tr, #t-cpu tbody tr { cursor: pointer; }
 #t-gpu tbody tr:hover, #t-cpu tbody tr:hover { background: var(--bg3); }
-tbody tr.actual { background: color-mix(in srgb, var(--acc) 12%, transparent); }
+tbody tr.actual { background: var(--acc-suave); }
 tbody tr.actual td:first-child { box-shadow: inset 3px 0 0 var(--acc); }
 tbody tr.actual .j-nombre::after {
   content: " · en tu equipo"; font-size: 11px; font-weight: 400; color: var(--acc);
@@ -227,7 +232,7 @@ tbody tr.actual .j-nombre::after {
 
 /* al cambiar un número, un destello corto para no perderlo de vista */
 @keyframes destello {
-  from { background: color-mix(in srgb, var(--acc2) 30%, transparent); }
+  from { background: var(--destello); }
   to   { background: transparent; }
 }
 .destello { animation: destello .5s ease-out; border-radius: 5px; }
@@ -236,3 +241,17 @@ tbody tr.actual .j-nombre::after {
 .barra > i { transition: width .25s ease; }
 .res-cell .v, .fps { transition: color .2s ease; }
 .card { transition: border-color .15s ease; }
+
+/* ---------- compartir ---------- */
+.acciones { display: flex; gap: 8px; align-items: center; }
+.aviso-flotante {
+  position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 16px);
+  background: var(--bg3); color: var(--txt); border: 1px solid var(--linea);
+  border-radius: 999px; padding: 10px 18px; font-size: 13.5px; box-shadow: 0 6px 24px rgba(0,0,0,.35);
+  opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; z-index: 50;
+}
+.aviso-flotante.ver { opacity: 1; transform: translate(-50%, 0); }
+@media (max-width: 620px) {
+  .acciones { width: 100%; }
+  .acciones .btn { flex: 1; }
+}
