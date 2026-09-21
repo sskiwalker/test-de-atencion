@@ -69,25 +69,29 @@
 <div class="wrap">
 
   <div class="card nivel-sel">
-    <div class="nivel-txt">
-      <h2 id="nivel-titulo">¿Cómo te lo explico?</h2>
-      <p class="mini" id="nivel-desc"></p>
-    </div>
-    <div class="chips" id="nivel-chips">
-      <button class="chip" type="button" data-nivel="1">Fácil</button>
-      <button class="chip on" type="button" data-nivel="2">Normal</button>
-      <button class="chip" type="button" data-nivel="3">Técnico</button>
+    <h2>Nivel de detalle</h2>
+    <p class="mini">Los números son los mismos en los tres. Cambia cuánto se muestra y con qué palabras.</p>
+    <div class="nivel-ops" id="nivel-chips">
+      <button class="nivel-op" type="button" data-nivel="1">
+        <b>Usuario</b><span>Eliges procesador y tarjeta gráfica. Te digo si los juegos se van a ver suaves y cuánto cuesta el equipo.</span>
+      </button>
+      <button class="nivel-op on" type="button" data-nivel="2">
+        <b>Técnico</b><span>Para decidir una compra: FPS, caídas, qué pieza frena a la otra, VRAM y el precio pieza por pieza.</span>
+      </button>
+      <button class="nivel-op" type="button" data-nivel="3">
+        <b>Experto</b><span>Para revisar el cálculo: milisegundos por fotograma, potencia de cada pieza, coeficientes y fórmulas.</span>
+      </button>
     </div>
   </div>
 
-  <div class="aviso solo-facil">
+  <div class="aviso solo-usuario">
     <strong>Ojo: esto son cálculos, no pruebas reales.</strong> La página estima cuántos
     <b>FPS</b> (cuadros por segundo) daría cada juego con las piezas que elijas. Mientras más FPS,
     más suave se ve: <b>60 está bien</b>, <b>30 se nota lento</b> y más de 100 se siente muy fluido.
     Los números pueden variar más o menos un 15%.
   </div>
 
-  <div class="aviso desde-normal">
+  <div class="aviso desde-tecnico">
     <strong>Esto son estimaciones, no mediciones.</strong> Todo se recalcula solo al cambiar cualquier cosa:
     los FPS salen de las specs de cada componente y del coste de frame de cada juego, no de una tabla de
     resultados guardada. Trátalos con un margen de <strong>±15%</strong>: el driver, el parche, la escena y tus
@@ -106,9 +110,9 @@
             <select id="preset"></select></label>
           <label class="f"><span>Procesador</span><select id="s-cpu"></select></label>
           <label class="f"><span>Tarjeta gráfica</span><select id="s-gpu"></select></label>
-          <p class="mini solo-facil">El resto de las piezas (placa, memoria, disco y refrigeración)
+          <p class="mini solo-usuario">El resto de las piezas (placa, memoria, disco y refrigeración)
             las elijo yo, compatibles con lo que marcaste. Igual van sumadas en el precio.</p>
-          <div class="desde-normal">
+          <div class="desde-tecnico">
             <label class="f"><span>Placa base</span><select id="s-placa"></select></label>
             <label class="f"><span>Memoria</span><select id="s-ram"></select></label>
             <div class="fila" style="margin-bottom:11px">
@@ -122,16 +126,16 @@
 
         <div class="card">
           <h2>Ajustes del juego</h2>
-          <label class="f"><span data-facil="Tamaño de la pantalla">Resolución</span><select id="c-res"></select></label>
+          <label class="f"><span data-simple="Tamaño de la pantalla">Resolución</span><select id="c-res"></select></label>
           <div class="fila" style="margin-bottom:11px">
-            <label class="f"><span data-facil="Calidad de imagen">Preset gráfico</span><select id="c-preset"></select></label>
-            <label class="f desde-normal"><span>Reescalado</span><select id="c-ups"></select></label>
+            <label class="f"><span data-simple="Calidad de imagen">Preset gráfico</span><select id="c-preset"></select></label>
+            <label class="f desde-tecnico"><span>Reescalado</span><select id="c-ups"></select></label>
           </div>
           <div class="fila" style="margin-bottom:0">
-            <label class="f"><span data-facil="Luces realistas">Ray tracing</span><select id="c-rt">
+            <label class="f"><span data-simple="Luces realistas">Ray tracing</span><select id="c-rt">
               <option value="off">Desactivado</option><option value="rt">Activado (donde exista)</option>
               <option value="pt">Path tracing (donde exista)</option></select></label>
-            <label class="f desde-normal"><span>Generación de frames</span><select id="c-fg">
+            <label class="f desde-tecnico"><span>Generación de frames</span><select id="c-fg">
               <option value="0">No</option><option value="1">Sí (aparte)</option></select></label>
           </div>
         </div>
@@ -140,7 +144,7 @@
           <h2>Precio estimado</h2>
           <div id="precios"></div>
           <div class="total"><span>Total</span><span style="text-align:right"><b class="num" id="total-usd"></b><br><span class="clp num" id="total-clp"></span></span></div>
-          <details class="desde-normal">
+          <details class="desde-tecnico">
             <summary>Ajustar supuestos de precio</summary>
             <div class="fila">
               <label class="f"><span>CLP por USD</span><input type="number" id="f-clp" step="1"></label>
@@ -149,7 +153,7 @@
             </div>
             <p class="mini">El factor CLP/USD sale de un ancla del propio informe: el 9800X3D a US$479 y a CLP $514.990 (abr-2026). No es tipo de cambio: incluye IVA, importación y margen local.</p>
           </details>
-          <div id="precio-notas" class="desde-normal"></div>
+          <div id="precio-notas" class="desde-tecnico"></div>
         </div>
       </div>
 
@@ -158,24 +162,24 @@
           <h2>Para qué alcanza este equipo</h2>
           <div id="clase"></div>
           <div class="res-grid" id="clase-res"></div>
-          <p class="mini" style="margin-top:10px" data-facil="Lo que daría la mayoría de tus juegos en cada tamaño de pantalla, con la calidad de imagen en Alto.">Mediana de los juegos marcados, en preset Alto y sin reescalado, a cada resolución.</p>
+          <p class="mini" style="margin-top:10px" data-simple="Lo que daría la mayoría de tus juegos en cada tamaño de pantalla, con la calidad de imagen en Alto.">Mediana de los juegos marcados, en preset Alto y sin reescalado, a cada resolución.</p>
         </div>
 
         <div class="card">
           <h2 id="fps-titulo">FPS estimados</h2>
           <div class="tabla-wrap"><table id="t-fps"><thead><tr>
             <th>Juego</th>
-            <th class="r"><span data-facil="FPS">FPS prom.</span></th>
-            <th class="r desde-normal">1% low</th>
-            <th><span data-facil="Qué tan suave">Rango probable</span></th>
-            <th class="desde-normal"><span>Limita</span></th>
-            <th data-facil="Cómo se ve">Veredicto</th>
-            <th class="r desde-normal">VRAM</th>
-            <th class="r solo-tecnico">ms GPU / CPU</th>
+            <th class="r"><span data-simple="FPS">FPS prom.</span></th>
+            <th class="r desde-tecnico">1% low</th>
+            <th><span data-simple="Qué tan suave">Rango probable</span></th>
+            <th class="desde-tecnico"><span>Limita</span></th>
+            <th data-simple="Cómo se ve">Veredicto</th>
+            <th class="r desde-tecnico">VRAM</th>
+            <th class="r solo-experto">ms GPU / CPU</th>
           </tr></thead><tbody></tbody></table></div>
           <div id="fps-avisos"></div>
           <details id="d-juegos">
-            <summary><span data-facil="Elegir qué juegos quieres ver">Elegir qué juegos entran en el cálculo</span> (<span id="n-juegos"></span>)</summary>
+            <summary><span data-simple="Elegir qué juegos quieres ver">Elegir qué juegos entran en el cálculo</span> (<span id="n-juegos"></span>)</summary>
             <div class="chips" id="chips-cat"></div>
             <div class="chips" id="chips-juegos" style="margin-top:8px"></div>
           </details>
@@ -189,22 +193,22 @@
   <section class="seccion" id="s-rank">
     <h2 class="titulo-seccion">Rankings <span>· todo el catálogo con tu configuración actual</span></h2>
     <div class="card">
-      <h2><span data-facil="Tarjetas gráficas: cuánto rinde cada una">Gráficas: rendimiento estimado y precio por FPS</span></h2>
+      <h2><span data-simple="Tarjetas gráficas: cuánto rinde cada una">Gráficas: rendimiento estimado y precio por FPS</span></h2>
       <p class="mini">Índice relativo calculado desde las specs (RTX 5070 a 1440p = 100). El precio por FPS usa tus juegos marcados, con la resolución, el preset y la CPU que tengas puestos ahora. <strong>Haz clic en cualquier fila para montarla en tu equipo</strong> y ver arriba el efecto.</p>
       <div class="tabla-scroll">
       <div class="tabla-wrap"><table id="t-gpu"><thead><tr>
         <th>GPU</th><th class="r">1080p</th><th class="r">1440p</th><th class="r">4K</th>
-        <th class="r desde-normal">VRAM</th><th class="r">Precio</th><th class="r">FPS medios</th><th class="r">US$ / FPS</th>
+        <th class="r desde-tecnico">VRAM</th><th class="r">Precio</th><th class="r">FPS medios</th><th class="r">US$ / FPS</th>
       </tr></thead><tbody></tbody></table></div></div>
     </div>
     <div class="card">
-      <h2><span data-facil="Procesadores: cuánto rinde cada uno">Procesadores: índice de juego</span></h2>
+      <h2><span data-simple="Procesadores: cuánto rinde cada uno">Procesadores: índice de juego</span></h2>
       <p class="mini">Índice con el perfil medio de tus juegos marcados (9800X3D = 100), ya con la RAM y la placa de tu equipo aplicadas. <strong>Haz clic en una fila para probarla</strong>; si es de otra plataforma, la placa y la RAM se cambian solas.</p>
       <div class="tabla-scroll">
       <div class="tabla-wrap"><table id="t-cpu"><thead><tr>
-        <th>CPU</th><th>Plataforma</th><th class="r">Núcleos</th><th class="r desde-normal">L3/núcleo</th>
-        <th class="r"><span data-facil="Potencia">Índice</span></th><th class="r">Precio</th>
-        <th class="r desde-normal">US$ / punto</th><th class="desde-normal">Estado</th>
+        <th>CPU</th><th>Plataforma</th><th class="r">Núcleos</th><th class="r desde-tecnico">L3/núcleo</th>
+        <th class="r"><span data-simple="Potencia">Índice</span></th><th class="r">Precio</th>
+        <th class="r desde-tecnico">US$ / punto</th><th class="desde-tecnico">Estado</th>
       </tr></thead><tbody></tbody></table></div></div>
     </div>
   </section>
@@ -252,7 +256,7 @@
       <p class="mini">Por eso subir la resolución golpea a la gráfica pero casi no toca al procesador:
       a 4K suele mandar la gráfica y a 1080p el procesador. No es una regla escrita a mano, sale del
       mismo cálculo.</p>
-      <details class="solo-tecnico">
+      <details class="solo-experto">
         <summary>La fórmula exacta, por si quieres revisarla</summary>
         <pre class="form">ms_GPU  = coste_GPU x preset x ray_tracing x (píxeles/1080p)^exp x (100/índice_GPU) / sesgo_motor
 ms_CPU  = coste_CPU x (100/índice_CPU)
@@ -265,13 +269,13 @@ FPS     = 1000 / frame,  luego VRAM, PCIe, RAM y tope del juego
 
 índice_CPU = IPC_arquitectura x reloj_del_CCD^0.75 x (1 + caché_L3) x núcleos x RAM x scheduler</pre>
       </details>
-      <details class="solo-tecnico"><summary>Ver los coeficientes calibrados</summary><div id="m-cal"></div></details>
+      <details class="solo-experto"><summary>Ver los coeficientes calibrados</summary><div id="m-cal"></div></details>
     </div>
     <div class="card">
       <h2>Calibración contra las cifras medidas del informe</h2>
       <p class="mini">Cada fila es un dato medido que cita el informe. El modelo no las usa como resultado: las usa para comprobarse. Las que no cuadran se muestran igual, con la explicación.</p>
       <div id="cal-resumen"></div>
-      <details class="desde-normal"><summary>Ver las 18 comprobaciones una por una</summary>
+      <details class="desde-tecnico"><summary>Ver las 18 comprobaciones una por una</summary>
         <div class="tabla-wrap"><table id="t-cal"><thead><tr>
           <th></th><th>Dato del informe</th><th class="r">Reportado</th><th class="r">Modelo</th>
         </tr></thead><tbody></tbody></table></div>
@@ -279,7 +283,7 @@ FPS     = 1000 / frame,  luego VRAM, PCIe, RAM y tope del juego
     </div>
     <div class="card">
       <h2>De dónde sale cada precio</h2>
-      <details class="desde-normal"><summary>Ver el origen de cada cifra</summary><div id="m-precios"></div></details>
+      <details class="desde-tecnico"><summary>Ver el origen de cada cifra</summary><div id="m-precios"></div></details>
     </div>
     <div class="card">
       <h2>Límites conocidos</h2>
