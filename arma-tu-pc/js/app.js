@@ -107,10 +107,41 @@
 
   /* ========================================================== RENDER ===== */
 
+  // Todo se recalcula solo: no hay ningún botón de "calcular".
   function render() {
     guardar();
     $$('#chips-juegos .chip').forEach(b => b.classList.toggle('on', S.juegos.indexOf(b.dataset.juego) >= 0));
-    pintarCompat(); pintarPrecios(); pintarFps(); pintarClase(); pintarRankings();
+    $('#n-juegos').textContent = S.juegos.length + ' de ' + D.juegos.length;
+    pintarCompat(); pintarPrecios(); pintarFps(); pintarClase(); pintarBarra(); pintarRankings();
+    programarReco();
+  }
+
+  /* --------------------------------------- barra fija siempre visible --- */
+  function pintarBarra() {
+    const lista = juegosSel();
+    const p = M.precioBuild(S.build, opPrecio());
+    const cpu = M.idx(D.cpus, S.build.cpu), gpu = M.idx(D.gpus, S.build.gpu);
+    const it = [];
+    const corto = t => t.replace(/\s*\((APU|integrada[^)]*)\)/, '').replace(' 10th Anniversary', '');
+    it.push({ k:'Equipo', v: esc(corto(cpu.n)) + ' <small>+ ' + esc(corto(gpu.n)) + '</small>' });
+    it.push({ k:'Precio', v: '<span class="num">' + usd(p.total) + '</span>', extra:'≈ ' + clp(p.clp), sep:true });
+    if (lista.length) {
+      const r = lista.map(j => M.estimar(j, S.build, S.cfg)).sort((a, b) => a.avg - b.avg);
+      const med = r[Math.floor(r.length / 2)].avg;
+      const v = M.veredicto(med, med * 0.7);
+      const cuellos = { GPU:0, CPU:0, Equilibrado:0 };
+      r.forEach(x => cuellos[x.limitante]++);
+      const domina = Object.keys(cuellos).sort((a, b) => cuellos[b] - cuellos[a])[0];
+      const nombreRes = { '1080p':'1080p', '1440p':'1440p', 'uw1440':'UW 1440p', '4k':'4K' }[S.cfg.res];
+      it.push({ k: nombreRes + ' · ' + S.cfg.preset, v:'<span class="' + v.cls + ' num">' + Math.round(med) + '</span> <small>FPS mediana</small>',
+                extra:'el peor de tus juegos: ' + Math.round(r[0].avg) + ' FPS', sep:true });
+      it.push({ k:'Cuello de botella', v:'<span class="' + (domina === 'GPU' ? 'n5' : domina === 'CPU' ? 'n2' : 'n4') + '">' + domina + '</span>',
+                extra: cuellos[domina] + ' de ' + r.length + ' juegos', sep:true });
+    }
+    $('#resumen').innerHTML = '<div class="resumen-in">' + it.map(x =>
+      '<div class="resumen-it' + (x.sep ? ' sep' : '') + '"><span class="k">' + x.k + '</span>' +
+      '<span class="v">' + x.v + '</span>' + (x.extra ? '<span class="eq">' + x.extra + '</span>' : '') + '</div>'
+    ).join('') + '</div>';
   }
 
   /* ---------------------------------------------------- compatibilidad -- */
@@ -303,6 +334,12 @@
   }
 
   /* ------------------------------------------------------ recomendador -- */
+  let recoTimer = null;
+  function programarReco() {
+    clearTimeout(recoTimer);
+    recoTimer = setTimeout(recomendar, 140);
+  }
+
   function recomendar() {
     const out = $('#r-out'); out.innerHTML = '';
     const lista = juegosSel();
@@ -340,7 +377,7 @@
         '<p class="mini"><strong class="num">' + Math.round(s.media) + ' FPS</strong> de media · ' + pct + '% de tus juegos sobre ' + objetivo +
         ' · el peor queda en <span class="num">' + Math.round(s.peor) + '</span></p>';
       const b = el('button', { className:'btn sec', type:'button' }, 'Cargar esta build');
-      b.onclick = () => { S.build = Object.assign({}, s.build); sincronizarSelects(); irA('armar'); render(); };
+      b.onclick = () => { S.build = Object.assign({}, s.build); sincronizarSelects(); irA('pc'); render(); };
       c.appendChild(b);
       g.appendChild(c);
     });
@@ -467,7 +504,8 @@
     $('#f-clp').onchange = e => { S.op.factorChile = Number(e.target.value) || Math.round(M.factorChile()); render(); };
     $('#f-usado').onchange = e => { S.op.factorUsado = Number(e.target.value) || 0.6; initSelects(); sincronizarSelects(); render(); };
     $('#f-gab').onchange = e => { S.op.gabineteUsd = Number(e.target.value) || 0; render(); };
-    $('#r-calc').onclick = recomendar;
+    ['#r-pres', '#r-fps'].forEach(id => { $(id).oninput = programarReco; });
+    ['#r-moneda', '#r-res', '#r-preset', '#r-actuales'].forEach(id => { $(id).onchange = programarReco; });
 
     $$('.tab').forEach(t => { t.onclick = () => irA(t.dataset.panel); });
     $$('[data-goto]').forEach(a => { a.onclick = ev => { ev.preventDefault(); irA(a.dataset.goto); }; });

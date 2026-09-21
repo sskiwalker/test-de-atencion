@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Calculadora de FPS estimados · Componentes PC sept-2026</title>
-<meta name="description" content="Estimador de FPS por juego, resolución y build, calculado desde las specs y precios del informe de componentes de PC de septiembre 2026.">
+<title>Arma tu PC · rendimiento y precio estimados (sept 2026)</title>
+<meta name="description" content="Cambia componentes y mira al instante qué rinde y cuánto cuesta, juego por juego y por resolución. Sobre los datos del informe de componentes de PC de septiembre 2026.">
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -13,65 +13,69 @@
   <div class="top-in">
     <div class="top-row">
       <div>
-        <h1>Calculadora de <span>FPS estimados</span></h1>
-        <p class="sub">Sobre el informe <em>Componentes de PC: mercado actual y próximos lanzamientos</em> · corte 21-sep-2026</p>
+        <h1>Arma tu <span>PC</span></h1>
+        <p class="sub">Rendimiento y precio estimados, juego por juego · datos del informe de componentes a 21-sep-2026</p>
       </div>
       <button class="btn sec" id="tema" type="button">Tema claro</button>
     </div>
     <nav class="tabs" role="tablist">
-      <button class="tab on" data-panel="armar">Armar PC</button>
-      <button class="tab" data-panel="fps">FPS por juego</button>
+      <button class="tab on" data-panel="pc">Tu equipo</button>
       <button class="tab" data-panel="rank">Rankings</button>
-      <button class="tab" data-panel="reco">Recomendador</button>
+      <button class="tab" data-panel="reco">Qué me conviene</button>
       <button class="tab" data-panel="metodo">Metodología</button>
     </nav>
   </div>
 </header>
 
+<div class="resumen" id="resumen"></div>
+
 <div class="wrap">
 
   <div class="aviso">
-    <strong>Esto son estimaciones, no mediciones.</strong> Los FPS se calculan a partir de las specs de cada
-    componente y del coste de frame de cada juego; no hay ninguna tabla de resultados guardada. Trátalos con un
-    margen de <strong>±15%</strong>: el driver, el parche, la escena y tus ajustes mueven bastante la aguja.
-    Nada aquí está inflado a propósito, y donde el modelo no cuadra con una cifra medida del informe se dice
-    en <a href="#" data-goto="metodo">Metodología</a>.
+    <strong>Esto son estimaciones, no mediciones.</strong> Todo se recalcula solo al cambiar cualquier cosa:
+    los FPS salen de las specs de cada componente y del coste de frame de cada juego, no de una tabla de
+    resultados guardada. Trátalos con un margen de <strong>±15%</strong>: el driver, el parche, la escena y tus
+    ajustes mueven bastante la aguja. Nada aquí está inflado a propósito, y donde el modelo no cuadra con una
+    cifra medida del informe se dice en <a href="#" data-goto="metodo">Metodología</a>.
   </div>
 
-  <!-- ============================================================ ARMAR -->
-  <section class="panel on" id="p-armar">
-    <div class="grid2">
-      <div>
+  <!-- ======================================================== TU EQUIPO -->
+  <section class="panel on" id="p-pc">
+    <div class="split">
+
+      <div class="col-a">
         <div class="card">
           <h2>Componentes</h2>
           <label class="f"><span>Cargar una build de referencia del informe</span>
             <select id="preset"></select></label>
+          <label class="f"><span>Procesador</span><select id="s-cpu"></select></label>
+          <label class="f"><span>Tarjeta gráfica</span><select id="s-gpu"></select></label>
+          <label class="f"><span>Placa base</span><select id="s-placa"></select></label>
+          <label class="f"><span>Memoria</span><select id="s-ram"></select></label>
           <div class="fila" style="margin-bottom:11px">
-            <label class="f" style="flex:2 1 260px"><span>Procesador</span><select id="s-cpu"></select></label>
-            <label class="f"><span>Placa base</span><select id="s-placa"></select></label>
+            <label class="f" style="flex:2 1 150px"><span>SSD</span><select id="s-ssd"></select></label>
+            <label class="f" style="flex:0 1 110px"><span>Capacidad</span><select id="s-cap"></select></label>
           </div>
-          <div class="fila" style="margin-bottom:11px">
-            <label class="f" style="flex:2 1 260px"><span>Tarjeta gráfica</span><select id="s-gpu"></select></label>
-            <label class="f"><span>Memoria</span><select id="s-ram"></select></label>
-          </div>
-          <div class="fila">
-            <label class="f" style="flex:2 1 220px"><span>SSD</span><select id="s-ssd"></select></label>
-            <label class="f" style="flex:0 1 120px"><span>Capacidad</span><select id="s-cap"></select></label>
-            <label class="f" style="flex:2 1 220px"><span>Cooler</span><select id="s-cooler"></select></label>
-          </div>
+          <label class="f" style="margin-bottom:0"><span>Cooler</span><select id="s-cooler"></select></label>
           <div id="compat"></div>
         </div>
 
         <div class="card">
-          <h2>Para qué alcanza esta PC</h2>
-          <div id="clase"></div>
-          <h3>Promedio de los juegos seleccionados</h3>
-          <div class="res-grid" id="clase-res"></div>
-          <p class="mini" style="margin-top:10px">Calculado sobre los juegos marcados en la pestaña <a href="#" data-goto="fps">FPS por juego</a>, en preset Alto y sin reescalado.</p>
+          <h2>Ajustes del juego</h2>
+          <label class="f"><span>Resolución</span><select id="c-res"></select></label>
+          <div class="fila" style="margin-bottom:11px">
+            <label class="f"><span>Preset gráfico</span><select id="c-preset"></select></label>
+            <label class="f"><span>Reescalado</span><select id="c-ups"></select></label>
+          </div>
+          <div class="fila" style="margin-bottom:0">
+            <label class="f"><span>Ray tracing</span><select id="c-rt">
+              <option value="off">Desactivado</option><option value="rt">Activado (donde exista)</option>
+              <option value="pt">Path tracing (donde exista)</option></select></label>
+            <label class="f"><span>Generación de frames</span><select id="c-fg">
+              <option value="0">No</option><option value="1">Sí (aparte)</option></select></label>
+          </div>
         </div>
-      </div>
 
-      <div>
         <div class="card">
           <h2>Precio estimado</h2>
           <div id="precios"></div>
@@ -79,43 +83,39 @@
           <details>
             <summary>Ajustar supuestos de precio</summary>
             <div class="fila">
-              <label class="f"><span>CLP por USD (precio Chile)</span><input type="number" id="f-clp" step="1"></label>
-              <label class="f"><span>Factor usado gen. anterior</span><input type="number" id="f-usado" step="0.05" min="0.2" max="1.2"></label>
-              <label class="f"><span>Gabinete (US$)</span><input type="number" id="f-gab" step="5"></label>
+              <label class="f"><span>CLP por USD</span><input type="number" id="f-clp" step="1"></label>
+              <label class="f"><span>Factor usado</span><input type="number" id="f-usado" step="0.05" min="0.2" max="1.2"></label>
+              <label class="f"><span>Gabinete US$</span><input type="number" id="f-gab" step="5"></label>
             </div>
             <p class="mini">El factor CLP/USD sale de un ancla del propio informe: el 9800X3D a US$479 y a CLP $514.990 (abr-2026). No es tipo de cambio: incluye IVA, importación y margen local.</p>
           </details>
           <div id="precio-notas"></div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ============================================================== FPS -->
-  <section class="panel" id="p-fps">
-    <div class="card">
-      <h2>Ajustes</h2>
-      <div class="fila">
-        <label class="f"><span>Resolución</span><select id="c-res"></select></label>
-        <label class="f"><span>Preset gráfico</span><select id="c-preset"></select></label>
-        <label class="f"><span>Ray tracing</span><select id="c-rt">
-          <option value="off">Desactivado</option><option value="rt">Activado (donde exista)</option>
-          <option value="pt">Path tracing (donde exista)</option></select></label>
-        <label class="f"><span>Reescalado</span><select id="c-ups"></select></label>
-        <label class="f" style="flex:0 1 200px"><span>Generación de frames</span><select id="c-fg">
-          <option value="0">No</option><option value="1">Sí (mostrar aparte)</option></select></label>
+      <div class="col-b">
+        <div class="card">
+          <h2>Para qué alcanza este equipo</h2>
+          <div id="clase"></div>
+          <div class="res-grid" id="clase-res"></div>
+          <p class="mini" style="margin-top:10px">Mediana de los juegos marcados, en preset Alto y sin reescalado, a cada resolución.</p>
+        </div>
+
+        <div class="card">
+          <h2 id="fps-titulo">FPS estimados</h2>
+          <div class="tabla-wrap"><table id="t-fps"><thead><tr>
+            <th>Juego</th><th class="r">FPS prom.</th><th class="r">1% low</th><th>Rango probable</th>
+            <th>Limita</th><th>Veredicto</th><th class="r">VRAM</th>
+          </tr></thead><tbody></tbody></table></div>
+          <div id="fps-avisos"></div>
+          <details id="d-juegos">
+            <summary>Elegir qué juegos entran en el cálculo (<span id="n-juegos"></span>)</summary>
+            <div class="chips" id="chips-cat"></div>
+            <div class="chips" id="chips-juegos" style="margin-top:8px"></div>
+          </details>
+        </div>
       </div>
-      <h3>Juegos incluidos</h3>
-      <div class="chips" id="chips-cat"></div>
-      <div class="chips" id="chips-juegos" style="margin-top:8px"></div>
-    </div>
-    <div class="card">
-      <h2 id="fps-titulo">FPS estimados</h2>
-      <div class="tabla-wrap"><table id="t-fps"><thead><tr>
-        <th>Juego</th><th class="r">FPS prom.</th><th class="r">1% low</th><th>Rango probable</th>
-        <th>Limita</th><th>Veredicto</th><th class="r">VRAM</th>
-      </tr></thead><tbody></tbody></table></div>
-      <div id="fps-avisos"></div>
+
     </div>
   </section>
 
@@ -123,7 +123,7 @@
   <section class="panel" id="p-rank">
     <div class="card">
       <h2>Gráficas: rendimiento estimado y precio por FPS</h2>
-      <p class="mini">Índice relativo calculado desde las specs (RTX 5070 a 1440p = 100). El precio por FPS usa los juegos que tengas marcados, a la resolución y preset elegidos en la pestaña anterior, con la CPU actual de tu build.</p>
+      <p class="mini">Índice relativo calculado desde las specs (RTX 5070 a 1440p = 100). El precio por FPS usa tus juegos marcados, con la resolución, el preset y la CPU que tengas puestos ahora.</p>
       <div class="tabla-wrap"><table id="t-gpu"><thead><tr>
         <th>GPU</th><th class="r">1080p</th><th class="r">1440p</th><th class="r">4K</th>
         <th class="r">VRAM</th><th class="r">Precio</th><th class="r">FPS medios</th><th class="r">US$ / FPS</th>
@@ -131,7 +131,7 @@
     </div>
     <div class="card">
       <h2>Procesadores: índice de juego</h2>
-      <p class="mini">Índice con el perfil medio de los juegos marcados (9800X3D = 100), ya con la RAM y la placa de tu build aplicadas.</p>
+      <p class="mini">Índice con el perfil medio de tus juegos marcados (9800X3D = 100), ya con la RAM y la placa de tu equipo aplicadas.</p>
       <div class="tabla-wrap"><table id="t-cpu"><thead><tr>
         <th>CPU</th><th>Plataforma</th><th class="r">Núcleos</th><th class="r">L3/núcleo</th>
         <th class="r">Índice</th><th class="r">Precio</th><th class="r">US$ / punto</th><th>Estado</th>
@@ -152,8 +152,7 @@
         <label class="f" style="flex:0 1 190px"><span>Componentes</span><select id="r-actuales">
           <option value="1">Solo lo que se vende hoy</option><option value="0">Incluir gen. anterior</option></select></label>
       </div>
-      <p class="mini">Prueba todas las combinaciones CPU × GPU compatibles, las arma con la placa, RAM y cooler más baratos que sirvan, descarta las que no entran en el presupuesto y ordena por cuántos de tus juegos llegan al objetivo. El presupuesto incluye PC completo: placa, RAM, SSD, fuente y gabinete.</p>
-      <button class="btn" id="r-calc" type="button" style="margin-top:10px">Calcular</button>
+      <p class="mini">Se recalcula solo. Prueba todas las combinaciones CPU × GPU compatibles, las arma con la placa, RAM y cooler más baratos que sirvan, descarta las que no entran en el presupuesto y ordena por cuántos de tus juegos llegan al objetivo. El presupuesto incluye PC completo: placa, RAM, SSD, fuente y gabinete.</p>
       <div id="r-out"></div>
     </div>
   </section>

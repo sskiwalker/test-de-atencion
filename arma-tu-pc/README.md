@@ -1,9 +1,15 @@
-# Calculadora de FPS estimados (componentes PC, sept-2026)
+# Arma tu PC — rendimiento y precio estimados (sept-2026)
 
-Estimador de FPS por juego, resolución y configuración, construido sobre el informe
-**“Componentes de PC: mercado actual y próximos lanzamientos”** (corte 21-sep-2026).
+Cambias un componente y ves al instante qué rinde y cuánto cuesta, juego por juego y por
+resolución. Construido sobre el informe **“Componentes de PC: mercado actual y próximos
+lanzamientos”** (corte 21-sep-2026).
 
-Abre `calculadora-fps/index.html` en cualquier navegador. No necesita servidor ni dependencias.
+Abre `arma-tu-pc/index.html` en cualquier navegador. No necesita servidor ni dependencias.
+
+**Todo se recalcula solo.** No hay ningún botón de “calcular”: componentes, precio, FPS por juego,
+rankings y recomendaciones se actualizan con cada cambio (unos 10 ms en total). Una franja fija
+arriba mantiene a la vista el precio, la mediana de FPS y dónde está el cuello de botella mientras
+cambias cosas más abajo.
 
 ## La regla del proyecto: no hay FPS guardados
 
@@ -86,7 +92,7 @@ porque sube el contador pero no la respuesta del juego.
 ## Archivos
 
 ```
-calculadora-fps/
+arma-tu-pc/
 ├── index.html          estructura y textos
 ├── css/styles.css      estilos (tema oscuro y claro)
 └── js/

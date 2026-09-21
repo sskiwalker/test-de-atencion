@@ -31,6 +31,25 @@ h1 span { color: var(--acc); }
 .sub { color: var(--txt2); font-size: 13px; margin: 0 0 14px; }
 .top-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
 
+/* franja de resumen siempre visible al desplazar
+   (ojo: la clase .barra ya existe para las barritas de la tabla de FPS) */
+.resumen {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--bg2); border-bottom: 1px solid var(--linea);
+  box-shadow: 0 2px 10px rgba(0,0,0,.25);
+}
+:root[data-tema="claro"] .resumen { box-shadow: 0 2px 10px rgba(16,24,40,.06); }
+.resumen-in {
+  max-width: 1240px; margin: 0 auto; padding: 9px 16px;
+  display: flex; gap: 22px; align-items: center; flex-wrap: wrap;
+}
+.resumen-it { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.resumen-it .k { font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--txt3); }
+.resumen-it .v { font-size: 16px; font-weight: 700; line-height: 1.15; }
+.resumen-it .v small { font-size: 11.5px; font-weight: 400; color: var(--txt2); margin-left: 4px; }
+.resumen-it.sep { border-left: 1px solid var(--linea); padding-left: 22px; }
+.resumen .eq { font-size: 11.5px; color: var(--txt2); }
+
 nav.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
 nav.tabs::-webkit-scrollbar { display: none; }
 .tab {
@@ -148,3 +167,25 @@ footer { margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--linea)
 .grid3 > .card { display: flex; flex-direction: column; }
 .grid3 > .card > .btn { margin-top: auto; align-self: flex-start; }
 .grid3 > .card .total { margin-top: 10px; }
+
+/* ---------- dos columnas: componentes a la izquierda, resultados a la derecha ---------- */
+.split { display: grid; grid-template-columns: minmax(320px, 390px) minmax(0, 1fr); gap: 14px; align-items: start; }
+.col-a > .card:first-child, .col-b > .card:first-child { margin-top: 0; }
+.col-a .card + .card, .col-b .card + .card { margin-top: 14px; }
+.col-a .fila > label.f { flex: 1 1 120px; }
+#d-juegos { margin-top: 12px; }
+#d-juegos summary { font-weight: 500; }
+
+@media (max-width: 1000px) {
+  .split { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  .resumen-in { gap: 14px; padding: 8px 12px; }
+  .resumen-it.sep { border-left: 0; padding-left: 0; }
+  .resumen-it .v { font-size: 14px; }
+}
+
+/* Los <select> tienen un ancho mínimo intrínseco: el de su opción más larga.
+   Sin esto, una opción larga estira la columna de la grilla y rompe el móvil. */
+.split > *, .col-a .card, .col-b .card, label.f, .fila > label.f { min-width: 0; }
+select { min-width: 0; max-width: 100%; }
