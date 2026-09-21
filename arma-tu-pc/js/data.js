@@ -551,6 +551,23 @@ window.DATA = (function () {
       up:['DLSS','FSR'], rt:{ n:'RT en pista', mult:1.30, vram:1.10 } }
   ];
 
+  /* ------------------------------------------------- Codificadores de video
+     Dato de hardware, no de rendimiento: qué motor de codificación trae cada
+     arquitectura y si sabe hacer AV1. Importa al exportar video y al grabar o
+     transmitir partidas, porque el trabajo no se lo lleva el procesador.
+  --------------------------------------------------------------------------- */
+  const codificadores = {
+    blackwell:{ n:'NVENC', av1:true,  nota:'El codificador con mejor fama para grabar y transmitir.' },
+    ada:      { n:'NVENC', av1:true,  nota:'El codificador con mejor fama para grabar y transmitir.' },
+    ampere:   { n:'NVENC', av1:false, nota:'Codifica H.264 y HEVC, pero no AV1.' },
+    rdna4:    { n:'AMF',   av1:true,  nota:'Mejoró mucho; ya sirve bien para grabar.' },
+    rdna3:    { n:'AMF',   av1:true,  nota:'Correcto para grabar, algo por detrás de NVENC.' },
+    rdna2:    { n:'AMF',   av1:false, nota:'Sin AV1 y por detrás de NVENC.' },
+    vega:     { n:'VCE',   av1:false, nota:'Codificador antiguo, solo para salir del paso.' },
+    xe2:      { n:'QuickSync', av1:true, nota:'QuickSync es de lo mejor para exportar video, sobre todo en AV1.' },
+    xe1:      { n:'QuickSync', av1:true, nota:'QuickSync exporta video muy rápido para lo que cuesta.' }
+  };
+
   /* ------------------------------------------------------------- Fuentes --- */
   const fuentes = [
     'Tom’s Hardware', 'TechSpot', 'GamersNexus', 'TechPowerUp', 'TweakTown', 'Notebookcheck',
@@ -581,5 +598,5 @@ window.DATA = (function () {
       ram:'d5-16x2', ssd:'990pro', ssdCap:1024, cooler:'pa120se', ref:'Resumen del informe' }
   ];
 
-  return { meta, cpus, gpus, placas, memoria, ssds, capacidades, coolers, juegos, fuentes, presets };
+  return { meta, cpus, gpus, placas, memoria, ssds, capacidades, coolers, juegos, codificadores, fuentes, presets };
 })();

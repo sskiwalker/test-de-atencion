@@ -205,7 +205,7 @@
     guardar();
     $$('#chips-juegos .chip').forEach(b => b.classList.toggle('on', S.juegos.indexOf(b.dataset.juego) >= 0));
     $('#n-juegos').textContent = S.juegos.length + ' de ' + D.juegos.length;
-    pintarCompat(); pintarPrecios(); pintarFps(); pintarClase(); pintarBarra(); pintarRankings();
+    pintarCompat(); pintarPrecios(); pintarFps(); pintarClase(); pintarCreativo(); pintarBarra(); pintarRankings();
     guardarEnUrl();
     destellar('#total-usd', $('#total-usd').textContent);
     destellar('#fps-titulo', $('#fps-titulo').textContent);
@@ -350,6 +350,25 @@
     if (S.cfg.fg) cont.appendChild(el('div', { className:'aviso' },
       '<strong>Sobre la generación de frames:</strong> esos FPS extra no reducen la latencia ni mejoran la respuesta; ' +
       'son suavidad visual. Por eso van aparte y nunca dentro del promedio.'));
+  }
+
+  /* ------------------------------------------- diseño, video y 3D -------- */
+  const ESTADO = {
+    sobrado:{ cls:'n5', t:'De sobra' }, bien:{ cls:'n4', t:'Bien' },
+    justo:{ cls:'n2', t:'Justo' }, corto:{ cls:'n0', t:'Corto' }
+  };
+  function pintarCreativo() {
+    const r = M.aptitudCreativa(S.build);
+    $('#creativo').innerHTML = r.areas.map(a => {
+      const e = ESTADO[a.estado];
+      return '<div class="apt">' +
+        '<div class="apt-cab"><span class="apt-punto ' + e.cls + '"></span>' +
+        '<span class="j-nombre">' + esc(a.n) + '</span>' +
+        '<span class="badge ' + e.cls + '">' + e.t + '</span></div>' +
+        '<p class="apt-txt">' + esc(a.txt) + '</p>' +
+        '<p class="apt-txt j-meta desde-tecnico">' + esc(a.detalle) + '</p>' +
+        '</div>';
+    }).join('');
   }
 
   /* ------------------------------------------------------ clase de PC --- */

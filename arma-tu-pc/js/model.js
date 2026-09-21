@@ -464,6 +464,91 @@ window.MODEL = (function (D) {
     return { errores, notas };
   }
 
+  /* ============================================ Diseño, video y 3D ========
+     OJO: aquí NO hay tiempos de render ni mediciones. El informe de origen es
+     de mercado gamer y no trae ni un dato de estas aplicaciones. Lo que se
+     evalúa son características del equipo contra criterios fijos y visibles:
+     cuánta RAM, cuánta VRAM, cuántos núcleos y qué codificador de video trae
+     la tarjeta. Son reglas de compra, no resultados de prueba.
+  --------------------------------------------------------------------------- */
+  const CRIT = {
+    ram:   { corto:16, bien:32, sobrado:64 },
+    vramVideo: { corto:6, justo:8, bien:12, sobrado:16 },
+    vram3d:    { corto:8, justo:12, bien:16, sobrado:24 },
+    nucleos:   { corto:8, bien:11, sobrado:14 }
+  };
+
+  function aptitudCreativa(build) {
+    const cpu = idx(D.cpus, build.cpu), gpu = idx(D.gpus, build.gpu), ram = idx(D.memoria.kits, build.ram);
+    const cod = D.codificadores[gpu.arch] || { n:'—', av1:false, nota:'' };
+    const vram = gpu.igpu ? 0 : gpu.vram;
+    const nuc = unidadesCpu(cpu);
+    const areas = [];
+
+    // --- Diseño 2D: manda la RAM, la gráfica casi no aparece ---------------
+    let e2d = ram.gb >= CRIT.ram.sobrado ? 'sobrado' : ram.gb >= CRIT.ram.bien ? 'bien'
+            : ram.gb >= CRIT.ram.corto ? 'justo' : 'corto';
+    areas.push({
+      id:'2d', n:'Diseño 2D · Photoshop, Illustrator, Figma', estado:e2d,
+      txt: ram.gb >= CRIT.ram.bien
+        ? 'Con ' + ram.gb + ' GB de RAM vas cómodo, incluso con archivos de muchas capas.'
+        : ram.gb >= CRIT.ram.corto
+          ? ram.gb + ' GB alcanzan para trabajo normal, pero un archivo grande de muchas capas te va a apretar.'
+          : 'Con ' + ram.gb + ' GB se va a pasmar apenas abras varios archivos.',
+      detalle: 'Aquí la tarjeta gráfica casi no influye: lo que manda es la RAM y, en segundo lugar, la velocidad de un solo núcleo del procesador.'
+    });
+
+    // --- Edición de video: VRAM + RAM deciden la resolución cómoda ---------
+    const nivelVram = vram >= CRIT.vramVideo.sobrado ? 3 : vram >= CRIT.vramVideo.bien ? 2 : vram >= CRIT.vramVideo.justo ? 1 : 0;
+    const nivelRam  = ram.gb >= CRIT.ram.sobrado ? 3 : ram.gb >= CRIT.ram.bien ? 2 : ram.gb >= CRIT.ram.corto ? 1 : 0;
+    const nivelVid = Math.min(nivelVram, nivelRam);
+    const resVid = ['1080p con apuros', '1080p cómodo y 4K justo', '4K cómodo', '4K y 8K sin problemas'][nivelVid];
+    areas.push({
+      id:'video', n:'Edición de video · Premiere, DaVinci, CapCut',
+      estado: ['corto','justo','bien','sobrado'][nivelVid],
+      txt: (gpu.igpu ? 'Sin tarjeta dedicada' : vram + ' GB de VRAM') + ' y ' + ram.gb + ' GB de RAM dan para ' + resVid + '.' +
+           (nivelVram < nivelRam ? ' Lo que te frena es la VRAM.' : nivelRam < nivelVram ? ' Lo que te frena es la RAM.' : ''),
+      detalle: 'Codificador ' + cod.n + ': ' + (cod.av1 ? 'sí hace AV1 por hardware.' : 'no hace AV1, solo H.264 y HEVC.') +
+               ' ' + cod.nota + ' El procesador ayuda al montar y al aplicar efectos: tienes ' + cpu.c + ' núcleos' +
+               (nuc < CRIT.nucleos.corto ? ', que es poco para video pesado.' : '.')
+    });
+
+    // --- 3D y render: aquí la marca cambia el resultado --------------------
+    const optix = gpu.v === 'nvidia' && !gpu.igpu;
+    const nivel3d = vram >= CRIT.vram3d.sobrado ? 3 : vram >= CRIT.vram3d.bien ? 2 : vram >= CRIT.vram3d.justo ? 1 : 0;
+    let e3d = ['corto','justo','bien','sobrado'][nivel3d];
+    if (!optix && e3d !== 'corto') e3d = e3d === 'sobrado' ? 'bien' : 'justo';   // sin OptiX se rinde bastante menos
+    areas.push({
+      id:'3d', n:'3D y render · Blender, Cinema 4D', estado: gpu.igpu ? 'corto' : e3d,
+      txt: gpu.igpu
+        ? 'Una gráfica integrada sirve para aprender a modelar, no para renderizar.'
+        : nivel3d === 0
+          // Con poca VRAM el problema es el tamaño de escena, no la marca.
+          ? 'Con ' + vram + ' GB de VRAM te quedas corto: una escena cargada no cabe.' +
+            (optix ? ' La ventaja de OptiX no compensa la falta de memoria.' : ' Y encima, sin OptiX el render tarda más que en una NVIDIA del mismo precio.')
+          : optix
+            ? 'NVIDIA es la ventaja aquí: sus núcleos OptiX rinden bastante más que el equivalente de AMD al mismo precio.'
+            : 'Ojo: en Blender una NVIDIA del mismo precio rinde bastante más, porque usa OptiX. Con ' + gpu.v.toUpperCase() + ' el render tarda más.',
+      detalle: gpu.igpu ? 'La escena tiene que caber en la RAM compartida, que es poca y lenta.'
+        : 'La VRAM decide el tamaño máximo de escena: con ' + vram + ' GB ' +
+          (nivel3d >= 2 ? 'te caben escenas grandes.' : nivel3d === 1 ? 'te caben escenas medianas; una muy cargada no entra.' : 'solo escenas chicas.')
+    });
+
+    // --- Grabar y transmitir ----------------------------------------------
+    areas.push({
+      id:'stream', n:'Grabar y transmitir partidas',
+      estado: gpu.igpu ? 'justo' : (cod.av1 ? 'bien' : 'justo'),
+      txt: gpu.igpu
+        ? 'Se puede, pero grabando con la integrada el equipo va a sufrir.'
+        : 'Graba con ' + cod.n + ', que usa un chip aparte de la tarjeta: casi no le quita FPS al juego.',
+      detalle: cod.av1
+        ? 'Con AV1 la misma calidad ocupa bastante menos, útil si subes o transmites con poca velocidad de internet.'
+        : 'Sin AV1 vas a gastar más ancho de banda para la misma calidad.'
+    });
+
+    return { areas, cod, criterios: CRIT };
+  }
+
   /* =================================================== Recomendador ======= */
   function placaPorDefecto(cpu, ram) {
     const c = D.placas.filter(p => p.pl === cpu.pl && p.mem === ram.tipo);
@@ -590,6 +675,6 @@ window.MODEL = (function (D) {
            gpuIndex, cpuIndex, cpuIndexJuegos, unidadesCpu, memBandwidth, memLatencia, memFactor,
            estimar, veredicto, vramDisponible, pcieGen,
            precioCpu, precioGpu, precioRam, precioSsd, precioBuild, fuente, factorChile,
-           coolerSuficiente, revisar, recomendar, calibracion,
+           coolerSuficiente, revisar, recomendar, calibracion, aptitudCreativa,
            placaPorDefecto, ramPorDefecto, coolerPorDefecto, premioGpu };
 })(window.DATA);

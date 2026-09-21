@@ -287,3 +287,11 @@ html[data-nivel="2"] .solo-experto { display: none !important; }
 html:not([data-nivel="1"]) .solo-usuario { display: none !important; }
 html[data-nivel="1"] .rango { display: none; }
 html[data-nivel="1"] .j-meta.motor { display: none; }
+
+/* ---------- aptitud para diseño y video ---------- */
+.apt { padding: 10px 0; border-top: 1px solid var(--linea); }
+.apt:first-child { border-top: 0; padding-top: 2px; }
+.apt-cab { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.apt-punto { width: 9px; height: 9px; border-radius: 50%; background: currentColor; flex: none; }
+.apt-txt { margin: 5px 0 0; font-size: 13px; color: var(--txt2); line-height: 1.5; }
+.apt-txt.j-meta { font-size: 12px; color: var(--txt3); }
