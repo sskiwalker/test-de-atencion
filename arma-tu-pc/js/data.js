@@ -55,7 +55,7 @@ window.DATA = (function () {
       boost:4.8, l3:64, l3Ccd:32, ccds:2, vcache:'no', tdp:105, precio:null, estado:'Disponible', memSens:1.0 },
     { id:'5900x', n:'Ryzen 9 5900X', pl:'AM4', arch:'zen3', c:12, smt:true, e:0,
       boost:4.8, l3:64, l3Ccd:32, ccds:2, vcache:'no', tdp:105, precio:null,
-      estado:'Disponible', memSens:1.0, nota:'CPU actual del equipo del informe.' },
+      estado:'Disponible', memSens:1.0 },
     { id:'5800xt', n:'Ryzen 7 5800XT', pl:'AM4', arch:'zen3', c:8, smt:true, e:0,
       boost:4.8, l3:32, l3Ccd:32, ccds:1, vcache:'no', tdp:105, precio:null, estado:'Disponible', memSens:1.0 },
     { id:'5700x', n:'Ryzen 7 5700X', pl:'AM4', arch:'zen3', c:8, smt:true, e:0,
@@ -228,7 +228,7 @@ window.DATA = (function () {
       vram:8, bus:128, mem:17, memTipo:'GDDR6', tbp:115, lanes:8, msrp:299, calle:null, fg:true, uso:'1080p' },
     { id:'3060', n:'GeForce RTX 3060 12GB', v:'nvidia', arch:'ampere', gen:'anterior', sp:3584, clk:1.78,
       vram:12, bus:192, mem:15, memTipo:'GDDR6', tbp:170, lanes:16, msrp:329, calle:null, fg:false,
-      uso:'1080p', nota:'GPU actual del equipo del informe.' },
+      uso:'1080p', nota:'De las más extendidas todavía; el punto de partida típico de una actualización.' },
     { id:'3050', n:'GeForce RTX 3050 8GB', v:'nvidia', arch:'ampere', gen:'anterior', sp:2560, clk:1.78,
       vram:8, bus:128, mem:14, memTipo:'GDDR6', tbp:130, lanes:8, msrp:249, calle:null, fg:false,
       uso:'1080p entrada', nota:'Base de los builds económicos chilenos y chinos.' },
@@ -314,7 +314,7 @@ window.DATA = (function () {
     { id:'sn7100', n:'WD_Black SN7100', gen:4, lect:7250, esc:6900, precios:{},
       nota:'Favorito para laptops/PS5. Sin precio en la fuente.' },
     { id:'nv3', n:'Kingston NV3', gen:4, lect:6000, esc:5000, precios:{}, barato:true,
-      nota:'Sin DRAM; bien para juegos. SSD actual del equipo del informe.' }
+      nota:'Sin DRAM; para juegos rinde bien igual.' }
   ];
   const capacidades = [500, 1024, 2048, 4096];
 
@@ -490,9 +490,9 @@ window.DATA = (function () {
 
   /* --------------------------------------- Builds de referencia del informe */
   const presets = [
-    { id:'mipc', n:'Mi PC actual (la del informe)', cpu:'5900x', gpu:'3060', placa:'a520',
+    { id:'am4-viejo', n:'AM4 de hace unos años (Ryzen 5000 + RTX 3060)', cpu:'5900x', gpu:'3060', placa:'a520',
       ram:'d4-16x1', ssd:'nv3', ssdCap:1024, cooler:'pa120se',
-      nota:'5900X + A520M-A PRO + RTX 3060 + 1x16GB DDR4-3200 + Kingston NV3.' },
+      ref:'Equipo típico a actualizar: sirve para ver cuánto cuesta el single channel y una placa PCIe 3.0.' },
     { id:'cl-esports', n:'Chile: eSports sin GPU (~CLP $500.000)', cpu:'5600gt', gpu:'vega7', placa:'a520',
       ram:'d4-16x2', ssd:'nv3', ssdCap:500, cooler:'stock', ref:'SoloTodo abr-2026' },
     { id:'cl-1080', n:'Chile: 1080p AAA alto (~CLP $800.000)', cpu:'5600', gpu:'5060', placa:'b550',

@@ -83,7 +83,7 @@
       <div class="col-a">
         <div class="card">
           <h2>Componentes</h2>
-          <label class="f"><span>Cargar una build de referencia del informe</span>
+          <label class="f"><span>Cargar una configuración de ejemplo</span>
             <select id="preset"></select></label>
           <label class="f"><span>Procesador</span><select id="s-cpu"></select></label>
           <label class="f"><span>Tarjeta gráfica</span><select id="s-gpu"></select></label>
@@ -202,15 +202,31 @@
   <section class="seccion" id="s-metodo">
     <h2 class="titulo-seccion">Metodología <span>· cómo se calcula y dónde falla</span></h2>
     <div class="card">
-      <h2>Cómo se calcula (y por qué no hay FPS guardados)</h2>
-      <p class="mini" style="font-size:13px;color:var(--txt2)">
-        Cada juego guarda su <strong>coste de frame</strong>, no su resultado: cuántos milisegundos de GPU y de CPU
-        cuesta un fotograma a 1080p sobre el hardware de referencia. Los FPS de cualquier combinación salen de
-        escalar ese coste.
-      </p>
-      <pre class="form">ms_GPU  = coste_GPU x preset x ray_tracing x (píxeles/1080p)^exp x (100/índice_GPU) / sesgo_motor
+      <h2>Cómo se calcula, en simple</h2>
+      <p class="intro">No hay ninguna tabla con resultados guardados. Cada vez que cambias una pieza,
+      el número se vuelve a calcular desde cero, y va así:</p>
+      <ol class="pasos">
+        <li><b>Cada juego trae un coste, no un resultado.</b> De cada juego se guarda cuánto trabajo
+          le da a la tarjeta gráfica y cuánto al procesador. Se mide en tiempo, no en FPS.</li>
+        <li><b>Cada pieza tiene una nota.</b> De sus características —núcleos, velocidad, caché,
+          memoria, ancho del bus— sale un número que dice cuánto rinde frente a las demás. La RTX 5070
+          a 1440p vale 100 y el resto se compara con ella.</li>
+        <li><b>Se reparte una cosa entre la otra.</b> El trabajo que pide el juego dividido por la
+          potencia de tu pieza da cuánto demora un fotograma. Y de ahí salen los FPS.</li>
+        <li><b>Manda el más lento de los dos.</b> Si el procesador va más atrás que la gráfica, el
+          resultado lo marca el procesador. Eso es el cuello de botella que aparece arriba.</li>
+        <li><b>Al final se descuentan los problemas reales.</b> VRAM que no alcanza, memoria en un solo
+          módulo, una placa PCIe 3.0 con una gráfica de bus angosto, el tope de FPS que trae el propio
+          juego. Todo eso resta, y se avisa cuando pasa.</li>
+      </ol>
+      <p class="mini">Por eso subir la resolución golpea a la gráfica pero casi no toca al procesador:
+      a 4K suele mandar la gráfica y a 1080p el procesador. No es una regla escrita a mano, sale del
+      mismo cálculo.</p>
+      <details>
+        <summary>La fórmula exacta, por si quieres revisarla</summary>
+        <pre class="form">ms_GPU  = coste_GPU x preset x ray_tracing x (píxeles/1080p)^exp x (100/índice_GPU) / sesgo_motor
 ms_CPU  = coste_CPU x (100/índice_CPU)
-frame   = (ms_GPU^6 + ms_CPU^6)^(1/6)      <- mezcla suave: el cuello de botella manda, pero no del todo
+frame   = (ms_GPU^6 + ms_CPU^6)^(1/6)      mezcla suave: el más lento manda, pero no del todo
 FPS     = 1000 / frame,  luego VRAM, PCIe, RAM y tope del juego
 
 índice_GPU = 1 / ( (1-w)/cómputo + w/ancho_de_banda )      w sube con la resolución
@@ -218,6 +234,7 @@ FPS     = 1000 / frame,  luego VRAM, PCIe, RAM y tope del juego
   ancho    = bus/8 x Gbps x multiplicador_de_caché
 
 índice_CPU = IPC_arquitectura x reloj_del_CCD^0.75 x (1 + caché_L3) x núcleos x RAM x scheduler</pre>
+      </details>
       <details><summary>Ver los coeficientes calibrados</summary><div id="m-cal"></div></details>
     </div>
     <div class="card">

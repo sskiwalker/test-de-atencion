@@ -81,7 +81,7 @@ Ada/Blackwell, Infinity Cache de RDNA). Referencia: **RTX 5070 a 1440p = 100**.
 núcleos útiles × calidad de la RAM × penalización de scheduler. Referencia: **Ryzen 7 9800X3D = 100**.
 Modela cosas que suelen ignorarse y que el informe menciona expresamente:
 
-- **Single channel** cuesta ~20-25% en juegos (el caso del equipo del informe).
+- **Single channel** cuesta ~20-25% en juegos, y es de los errores más frecuentes al armar barato.
 - Los **X3D de doble CCD** (9950X3D, 9900X3D) pierden si el juego cae en el CCD sin V-Cache; se
   muestra el caso esperado y se avisa del peor caso documentado (TechRadar, TW: Warhammer III).
 - La **caché 3D** rinde distinto según el juego: un simulador la aprovecha mucho más que un shooter.

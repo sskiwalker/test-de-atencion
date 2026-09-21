@@ -255,3 +255,11 @@ tbody tr.actual .j-nombre::after {
   .acciones { width: 100%; }
   .acciones .btn { flex: 1; }
 }
+
+/* ---------- explicación en palabras ---------- */
+.intro { font-size: 14px; color: var(--txt2); margin: 0 0 14px; }
+ol.pasos { margin: 0 0 14px; padding-left: 20px; font-size: 14px; color: var(--txt2); }
+ol.pasos li { margin-bottom: 11px; padding-left: 3px; }
+ol.pasos li::marker { color: var(--acc); font-weight: 700; }
+ol.pasos b { color: var(--txt); font-weight: 600; }
+@media (max-width: 620px) { pre.form { font-size: 11px; } }
