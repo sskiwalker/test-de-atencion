@@ -25,7 +25,7 @@ a { color: var(--acc2); }
 /* ---------- estructura ---------- */
 .wrap { max-width: 1240px; margin: 0 auto; padding: 0 16px 64px; }
 header.top { border-bottom: 1px solid var(--linea); background: var(--bg2); }
-.top-in { max-width: 1240px; margin: 0 auto; padding: 18px 16px 0; }
+.top-in { max-width: 1240px; margin: 0 auto; padding: 16px 16px 0; }
 h1 { font-size: 21px; margin: 0 0 4px; letter-spacing: -.01em; }
 h1 span { color: var(--acc); }
 .sub { color: var(--txt2); font-size: 13px; margin: 0 0 14px; }
@@ -40,9 +40,11 @@ h1 span { color: var(--acc); }
 }
 :root[data-tema="claro"] .resumen { box-shadow: 0 2px 10px rgba(16,24,40,.06); }
 .resumen-in {
-  max-width: 1240px; margin: 0 auto; padding: 9px 16px;
-  display: flex; gap: 22px; align-items: center; flex-wrap: wrap;
+  max-width: 1240px; margin: 0 auto; padding: 7px 16px;
+  display: flex; gap: 18px; align-items: center; justify-content: space-between; flex-wrap: wrap;
 }
+.resumen-datos { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; min-width: 0; }
+.saltos .tab { padding: 7px 9px; font-size: 13px; }
 .resumen-it { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .resumen-it .k { font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--txt3); }
 .resumen-it .v { font-size: 16px; font-weight: 700; line-height: 1.15; }
@@ -58,8 +60,12 @@ nav.tabs::-webkit-scrollbar { display: none; }
 }
 .tab:hover { color: var(--txt); }
 .tab.on { color: var(--txt); border-bottom-color: var(--acc); }
-.panel { display: none; padding-top: 20px; }
-.panel.on { display: block; }
+.tab { transition: color .15s ease, border-color .15s ease; }
+.seccion { padding-top: 22px; scroll-margin-top: 86px; }
+.titulo-seccion { font-size: 17px; margin: 26px 0 -2px; letter-spacing: -.01em; }
+.titulo-seccion span { font-size: 13px; font-weight: 400; color: var(--txt3); letter-spacing: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 /* ---------- avisos ---------- */
 .aviso {
@@ -180,12 +186,53 @@ footer { margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--linea)
   .split { grid-template-columns: 1fr; }
 }
 @media (max-width: 620px) {
-  .resumen-in { gap: 14px; padding: 8px 12px; }
+  /* En pantalla chica la franja se queda con lo que decide una compra:
+     precio, FPS y dónde está el cuello de botella. El equipo ya se ve en los
+     selectores, que están justo debajo. */
+  .resumen-in { gap: 6px 14px; padding: 6px 12px; justify-content: flex-start; }
+  .resumen-datos { gap: 16px; }
   .resumen-it.sep { border-left: 0; padding-left: 0; }
   .resumen-it .v { font-size: 14px; }
+  .resumen-it .k { font-size: 9.5px; }
+  .resumen-it .eq, .resumen-datos .resumen-it:first-child { display: none; }
+  .saltos { width: 100%; }
+  .saltos .tab { padding: 6px 8px; font-size: 12.5px; }
+  .seccion { scroll-margin-top: 106px; }
+  .tabla-scroll { max-height: 360px; }
 }
 
 /* Los <select> tienen un ancho mínimo intrínseco: el de su opción más larga.
    Sin esto, una opción larga estira la columna de la grilla y rompe el móvil. */
 .split > *, .col-a .card, .col-b .card, label.f, .fila > label.f { min-width: 0; }
 select { min-width: 0; max-width: 100%; }
+
+/* ---------- una sola página: fluidez e interacción ---------- */
+
+/* tablas largas: se desplazan por dentro para no estirar la página */
+.tabla-scroll { max-height: 440px; overflow: auto; margin: 0 -16px; padding: 0 16px; }
+.tabla-scroll table { margin-top: 0; }
+.tabla-scroll thead th {
+  position: sticky; top: 0; z-index: 2;
+  background: var(--bg2); box-shadow: 0 1px 0 var(--linea);
+}
+
+/* filas que se pueden montar en el equipo con un clic */
+#t-gpu tbody tr, #t-cpu tbody tr { cursor: pointer; }
+#t-gpu tbody tr:hover, #t-cpu tbody tr:hover { background: var(--bg3); }
+tbody tr.actual { background: color-mix(in srgb, var(--acc) 12%, transparent); }
+tbody tr.actual td:first-child { box-shadow: inset 3px 0 0 var(--acc); }
+tbody tr.actual .j-nombre::after {
+  content: " · en tu equipo"; font-size: 11px; font-weight: 400; color: var(--acc);
+}
+
+/* al cambiar un número, un destello corto para no perderlo de vista */
+@keyframes destello {
+  from { background: color-mix(in srgb, var(--acc2) 30%, transparent); }
+  to   { background: transparent; }
+}
+.destello { animation: destello .5s ease-out; border-radius: 5px; }
+@media (prefers-reduced-motion: reduce) { .destello { animation: none; } }
+
+.barra > i { transition: width .25s ease; }
+.res-cell .v, .fps { transition: color .2s ease; }
+.card { transition: border-color .15s ease; }

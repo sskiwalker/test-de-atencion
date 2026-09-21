@@ -6,10 +6,14 @@ lanzamientos”** (corte 21-sep-2026).
 
 Abre `arma-tu-pc/index.html` en cualquier navegador. No necesita servidor ni dependencias.
 
-**Todo se recalcula solo.** No hay ningún botón de “calcular”: componentes, precio, FPS por juego,
-rankings y recomendaciones se actualizan con cada cambio (unos 10 ms en total). Una franja fija
-arriba mantiene a la vista el precio, la mediana de FPS y dónde está el cuello de botella mientras
-cambias cosas más abajo.
+**Una sola página y todo en vivo.** No hay pestañas ni botón de “calcular”: componentes, precio,
+FPS por juego, rankings y recomendaciones viven en la misma página y se actualizan con cada cambio
+(unos 10 ms en total). Una franja fija arriba mantiene a la vista el precio, la mediana de FPS y
+dónde está el cuello de botella mientras cambias cosas más abajo, y marca sola en qué sección vas.
+
+Los rankings son interactivos: **un clic en cualquier fila monta esa GPU o esa CPU en tu equipo**
+(si la CPU es de otra plataforma, la placa y la RAM se ajustan solas) y el efecto se ve al tiro en
+la franja de arriba. La fila del componente que tienes puesto va marcada.
 
 ## La regla del proyecto: no hay FPS guardados
 
@@ -68,7 +72,7 @@ Todo precio calculado en vez de publicado lleva la etiqueta `est.`
 
 ## Calibración honesta
 
-La pestaña **Metodología** contrasta el modelo contra cada cifra medida que cita el informe y
+La sección **Metodología** contrasta el modelo contra cada cifra medida que cita el informe y
 muestra también **las que no cuadran**, con su explicación. De 18 anclas, 15 caen dentro de la
 tolerancia. Las tres que no:
 

@@ -14,20 +14,24 @@
     <div class="top-row">
       <div>
         <h1>Arma tu <span>PC</span></h1>
-        <p class="sub">Rendimiento y precio estimados, juego por juego · datos del informe de componentes a 21-sep-2026</p>
+        <p class="sub" style="margin-bottom:16px">Rendimiento y precio estimados, juego por juego · datos del informe de componentes a 21-sep-2026</p>
       </div>
       <button class="btn sec" id="tema" type="button">Tema claro</button>
     </div>
-    <nav class="tabs" role="tablist">
-      <button class="tab on" data-panel="pc">Tu equipo</button>
-      <button class="tab" data-panel="rank">Rankings</button>
-      <button class="tab" data-panel="reco">Qué me conviene</button>
-      <button class="tab" data-panel="metodo">Metodología</button>
-    </nav>
   </div>
 </header>
 
-<div class="resumen" id="resumen"></div>
+<div class="resumen" id="resumen">
+  <div class="resumen-in">
+    <div class="resumen-datos" id="resumen-datos"></div>
+    <nav class="tabs saltos">
+      <button class="tab on" data-ir="s-equipo">Tu equipo</button>
+      <button class="tab" data-ir="s-rank">Rankings</button>
+      <button class="tab" data-ir="s-reco">Qué me conviene</button>
+      <button class="tab" data-ir="s-metodo">Metodología</button>
+    </nav>
+  </div>
+</div>
 
 <div class="wrap">
 
@@ -36,11 +40,11 @@
     los FPS salen de las specs de cada componente y del coste de frame de cada juego, no de una tabla de
     resultados guardada. Trátalos con un margen de <strong>±15%</strong>: el driver, el parche, la escena y tus
     ajustes mueven bastante la aguja. Nada aquí está inflado a propósito, y donde el modelo no cuadra con una
-    cifra medida del informe se dice en <a href="#" data-goto="metodo">Metodología</a>.
+    cifra medida del informe se dice en <a href="#" data-ir="s-metodo">Metodología</a>.
   </div>
 
   <!-- ======================================================== TU EQUIPO -->
-  <section class="panel on" id="p-pc">
+  <section class="seccion" id="s-equipo">
     <div class="split">
 
       <div class="col-a">
@@ -120,27 +124,31 @@
   </section>
 
   <!-- =========================================================== RANKING -->
-  <section class="panel" id="p-rank">
+  <section class="seccion" id="s-rank">
+    <h2 class="titulo-seccion">Rankings <span>· todo el catálogo con tu configuración actual</span></h2>
     <div class="card">
       <h2>Gráficas: rendimiento estimado y precio por FPS</h2>
-      <p class="mini">Índice relativo calculado desde las specs (RTX 5070 a 1440p = 100). El precio por FPS usa tus juegos marcados, con la resolución, el preset y la CPU que tengas puestos ahora.</p>
+      <p class="mini">Índice relativo calculado desde las specs (RTX 5070 a 1440p = 100). El precio por FPS usa tus juegos marcados, con la resolución, el preset y la CPU que tengas puestos ahora. <strong>Haz clic en cualquier fila para montarla en tu equipo</strong> y ver arriba el efecto.</p>
+      <div class="tabla-scroll">
       <div class="tabla-wrap"><table id="t-gpu"><thead><tr>
         <th>GPU</th><th class="r">1080p</th><th class="r">1440p</th><th class="r">4K</th>
         <th class="r">VRAM</th><th class="r">Precio</th><th class="r">FPS medios</th><th class="r">US$ / FPS</th>
-      </tr></thead><tbody></tbody></table></div>
+      </tr></thead><tbody></tbody></table></div></div>
     </div>
     <div class="card">
       <h2>Procesadores: índice de juego</h2>
-      <p class="mini">Índice con el perfil medio de tus juegos marcados (9800X3D = 100), ya con la RAM y la placa de tu equipo aplicadas.</p>
+      <p class="mini">Índice con el perfil medio de tus juegos marcados (9800X3D = 100), ya con la RAM y la placa de tu equipo aplicadas. <strong>Haz clic en una fila para probarla</strong>; si es de otra plataforma, la placa y la RAM se cambian solas.</p>
+      <div class="tabla-scroll">
       <div class="tabla-wrap"><table id="t-cpu"><thead><tr>
         <th>CPU</th><th>Plataforma</th><th class="r">Núcleos</th><th class="r">L3/núcleo</th>
         <th class="r">Índice</th><th class="r">Precio</th><th class="r">US$ / punto</th><th>Estado</th>
-      </tr></thead><tbody></tbody></table></div>
+      </tr></thead><tbody></tbody></table></div></div>
     </div>
   </section>
 
   <!-- ============================================================= RECO -->
-  <section class="panel" id="p-reco">
+  <section class="seccion" id="s-reco">
+    <h2 class="titulo-seccion">Qué me conviene <span>· busca la mejor combinación para tu presupuesto</span></h2>
     <div class="card">
       <h2>¿Qué me armo con lo que tengo?</h2>
       <div class="fila">
@@ -158,7 +166,8 @@
   </section>
 
   <!-- =========================================================== METODO -->
-  <section class="panel" id="p-metodo">
+  <section class="seccion" id="s-metodo">
+    <h2 class="titulo-seccion">Metodología <span>· cómo se calcula y dónde falla</span></h2>
     <div class="card">
       <h2>Cómo se calcula (y por qué no hay FPS guardados)</h2>
       <p class="mini" style="font-size:13px;color:var(--txt2)">
@@ -176,22 +185,25 @@ FPS     = 1000 / frame,  luego VRAM, PCIe, RAM y tope del juego
   ancho    = bus/8 x Gbps x multiplicador_de_caché
 
 índice_CPU = IPC_arquitectura x reloj_del_CCD^0.75 x (1 + caché_L3) x núcleos x RAM x scheduler</pre>
-      <div id="m-cal"></div>
+      <details><summary>Ver los coeficientes calibrados</summary><div id="m-cal"></div></details>
     </div>
     <div class="card">
       <h2>Calibración contra las cifras medidas del informe</h2>
       <p class="mini">Cada fila es un dato medido que cita el informe. El modelo no las usa como resultado: las usa para comprobarse. Las que no cuadran se muestran igual, con la explicación.</p>
-      <div class="tabla-wrap"><table id="t-cal"><thead><tr>
-        <th></th><th>Dato del informe</th><th class="r">Reportado</th><th class="r">Modelo</th>
-      </tr></thead><tbody></tbody></table></div>
+      <div id="cal-resumen"></div>
+      <details><summary>Ver las 18 comprobaciones una por una</summary>
+        <div class="tabla-wrap"><table id="t-cal"><thead><tr>
+          <th></th><th>Dato del informe</th><th class="r">Reportado</th><th class="r">Modelo</th>
+        </tr></thead><tbody></tbody></table></div>
+      </details>
     </div>
     <div class="card">
       <h2>De dónde sale cada precio</h2>
-      <div id="m-precios"></div>
+      <details><summary>Ver el origen de cada cifra</summary><div id="m-precios"></div></details>
     </div>
     <div class="card">
       <h2>Límites conocidos</h2>
-      <ul class="notas" id="m-limites"></ul>
+      <details open><summary>Qué no hace este modelo</summary><ul class="notas" id="m-limites"></ul></details>
     </div>
     <div class="card">
       <h2>Fuentes del informe</h2>

@@ -113,6 +113,8 @@
     $$('#chips-juegos .chip').forEach(b => b.classList.toggle('on', S.juegos.indexOf(b.dataset.juego) >= 0));
     $('#n-juegos').textContent = S.juegos.length + ' de ' + D.juegos.length;
     pintarCompat(); pintarPrecios(); pintarFps(); pintarClase(); pintarBarra(); pintarRankings();
+    destellar('#total-usd', $('#total-usd').textContent);
+    destellar('#fps-titulo', $('#fps-titulo').textContent);
     programarReco();
   }
 
@@ -138,10 +140,23 @@
       it.push({ k:'Cuello de botella', v:'<span class="' + (domina === 'GPU' ? 'n5' : domina === 'CPU' ? 'n2' : 'n4') + '">' + domina + '</span>',
                 extra: cuellos[domina] + ' de ' + r.length + ' juegos', sep:true });
     }
-    $('#resumen').innerHTML = '<div class="resumen-in">' + it.map(x =>
+    $('#resumen-datos').innerHTML = it.map(x =>
       '<div class="resumen-it' + (x.sep ? ' sep' : '') + '"><span class="k">' + x.k + '</span>' +
       '<span class="v">' + x.v + '</span>' + (x.extra ? '<span class="eq">' + x.extra + '</span>' : '') + '</div>'
-    ).join('') + '</div>';
+    ).join('');
+  }
+
+  /* ------- destello corto cuando un número cambia, para no perderlo de vista - */
+  const previo = {};
+  function destellar(sel, valor) {
+    const n = $(sel);
+    if (!n) return;
+    if (previo[sel] !== undefined && previo[sel] !== valor) {
+      n.classList.remove('destello');
+      void n.offsetWidth;                      // reinicia la animación
+      n.classList.add('destello');
+    }
+    previo[sel] = valor;
   }
 
   /* ---------------------------------------------------- compatibilidad -- */
@@ -284,6 +299,9 @@
   /* ---------------------------------------------------------- rankings -- */
   function pintarRankings() {
     const lista = juegosSel();
+    // Guardar el desplazamiento interno de las tablas: se repintan enteras en
+    // cada cambio y si no, la lista salta al principio cada vez.
+    const scrolls = $$('.tabla-scroll').map(n => n.scrollTop);
     const tb = $('#t-gpu tbody'); tb.innerHTML = '';
     const ram = M.idx(D.memoria.kits, S.build.ram);
     const filas = D.gpus.map(g => {
@@ -304,6 +322,9 @@
       tr.appendChild(el('td', { className:'r' }, (f.g.igpu ? '—' : '<span class="num">' + usd(f.p.usd) + '</span>' + (f.p.est ? ' <span class="badge est">est.</span>' : ''))));
       tr.appendChild(el('td', { className:'r num' }, f.media ? Math.round(f.media) : '—'));
       tr.appendChild(el('td', { className:'r' }, f.porFps ? '<span class="num ' + (f.porFps <= mejor * 1.15 ? 'n4' : '') + '">' + f.porFps.toFixed(1) + '</span>' : '—'));
+      if (f.g.id === S.build.gpu) tr.classList.add('actual');
+      tr.title = 'Montar la ' + f.g.n + ' en tu equipo';
+      tr.onclick = () => { S.build.gpu = f.g.id; sincronizarSelects(); render(); };
       tb.appendChild(tr);
     });
 
@@ -329,8 +350,12 @@
       tr.appendChild(el('td', { className:'r' }, '<span class="num">' + usd(f.p.usd) + '</span>' + (f.p.est ? ' <span class="badge est">est.</span>' : '')));
       tr.appendChild(el('td', { className:'r num' }, (f.p.usd / f.i).toFixed(1)));
       tr.appendChild(el('td', {}, '<span class="j-meta">' + esc(f.c.estado || '') + '</span>'));
+      if (f.c.id === S.build.cpu) tr.classList.add('actual');
+      tr.title = 'Probar el ' + f.c.n + ' en tu equipo' + (f.compat ? '' : ' (cambia la placa y la RAM)');
+      tr.onclick = () => { S.build.cpu = f.c.id; autoCompatibilizar(); render(); };
       tc.appendChild(tr);
     });
+    $$('.tabla-scroll').forEach((n, i) => { if (scrolls[i] !== undefined) n.scrollTop = scrolls[i]; });
   }
 
   /* ------------------------------------------------------ recomendador -- */
@@ -377,7 +402,7 @@
         '<p class="mini"><strong class="num">' + Math.round(s.media) + ' FPS</strong> de media · ' + pct + '% de tus juegos sobre ' + objetivo +
         ' · el peor queda en <span class="num">' + Math.round(s.peor) + '</span></p>';
       const b = el('button', { className:'btn sec', type:'button' }, 'Cargar esta build');
-      b.onclick = () => { S.build = Object.assign({}, s.build); sincronizarSelects(); irA('pc'); render(); };
+      b.onclick = () => { S.build = Object.assign({}, s.build); sincronizarSelects(); irA('s-equipo'); render(); };
       c.appendChild(b);
       g.appendChild(c);
     });
@@ -420,8 +445,17 @@
       (c.ccdAsimPeor * 100).toFixed(0) + '%</code>) · penalización de single channel <code>' + (c.memSingle * 100).toFixed(0) +
       '%</code> · mezcla CPU/GPU con exponente <code>' + c.mezcla + '</code> · margen declarado <code>±' + (c.margen * 100) + '%</code>.'));
 
+    const cal = M.calibracion();
+    const cuadran = cal.filter(f => f.ok).length;
+    const fallan = cal.filter(f => !f.ok);
+    $('#cal-resumen').innerHTML =
+      '<div class="clase"><div class="big ' + (cuadran / cal.length >= 0.8 ? 'n4' : 'n2') + '">' +
+      cuadran + '/' + cal.length + '</div><div class="t">comprobaciones dentro de la tolerancia. ' +
+      (fallan.length ? 'No cuadran: ' + fallan.map(f => esc(f.juego)).join(', ') + '. Están abajo con su explicación.'
+                     : 'Ninguna se sale.') + '</div></div>';
+
     const tc = $('#t-cal tbody'); tc.innerHTML = '';
-    M.calibracion().forEach(f => {
+    cal.forEach(f => {
       const tr = el('tr');
       tr.appendChild(el('td', {}, '<span class="badge ' + (f.ok ? 'ok' : 'alerta') + '">' + (f.ok ? 'cuadra' : 'no cuadra') + '</span>'));
       tr.appendChild(el('td', {}, '<span class="j-nombre">' + esc(f.juego) + '</span><br><span class="j-meta">' + esc(f.texto) + '</span>' +
@@ -474,10 +508,28 @@
     sincronizarSelects();
   }
 
+  // Una sola página: los enlaces desplazan, no cambian de vista.
   function irA(id) {
-    $$('.tab').forEach(t => t.classList.toggle('on', t.dataset.panel === id));
-    $$('.panel').forEach(p => p.classList.toggle('on', p.id === 'p-' + id));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const n = document.getElementById(id);
+    if (n) n.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  const alturaFranja = () => Math.round($('#resumen').getBoundingClientRect().height) || 72;
+
+  // La sección visible se marca sola en la franja fija. Se rehace al cambiar el
+  // tamaño porque la franja crece o se encoge al reacomodarse.
+  let observador = null;
+  function vigilarSecciones() {
+    const secciones = $$('.seccion');
+    if (!('IntersectionObserver' in window)) return;
+    if (observador) observador.disconnect();
+    const obs = observador = new IntersectionObserver(entradas => {
+      entradas.forEach(e => {
+        if (!e.isIntersecting) return;
+        $$('.saltos .tab').forEach(t => t.classList.toggle('on', t.dataset.ir === e.target.id));
+      });
+    }, { rootMargin: '-' + (alturaFranja() + 8) + 'px 0px -60% 0px', threshold: 0 });
+    secciones.forEach(x => obs.observe(x));
   }
 
   function init() {
@@ -507,8 +559,10 @@
     ['#r-pres', '#r-fps'].forEach(id => { $(id).oninput = programarReco; });
     ['#r-moneda', '#r-res', '#r-preset', '#r-actuales'].forEach(id => { $(id).onchange = programarReco; });
 
-    $$('.tab').forEach(t => { t.onclick = () => irA(t.dataset.panel); });
-    $$('[data-goto]').forEach(a => { a.onclick = ev => { ev.preventDefault(); irA(a.dataset.goto); }; });
+    $$('[data-ir]').forEach(a => { a.onclick = ev => { ev.preventDefault(); irA(a.dataset.ir); }; });
+    vigilarSecciones();
+    let tRedim = null;
+    window.addEventListener('resize', () => { clearTimeout(tRedim); tRedim = setTimeout(vigilarSecciones, 200); });
     $('#tema').onclick = () => {
       const claro = document.documentElement.dataset.tema === 'claro';
       document.documentElement.dataset.tema = claro ? 'oscuro' : 'claro';
