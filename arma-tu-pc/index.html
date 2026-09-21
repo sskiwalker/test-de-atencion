@@ -36,6 +36,7 @@
 <meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)">
 
 <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
 
@@ -312,6 +313,16 @@ FPS     = 1000 / frame,  luego VRAM, PCIe, RAM y tope del juego
 </div>
 
 <div class="aviso-flotante" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Temporal: barra para comparar identidades visuales y quedarse con una. -->
+<div class="elige" id="elige">
+  <span>Estilo:</span>
+  <button type="button" data-estilo="">Actual</button>
+  <button type="button" data-estilo="consola">Consola</button>
+  <button type="button" data-estilo="editorial">Editorial</button>
+  <button type="button" data-estilo="arcade">Arcade</button>
+  <button type="button" data-estilo="ficha">Ficha técnica</button>
+</div>
 
 <script src="js/data.js"></script>
 <script src="js/model.js"></script>

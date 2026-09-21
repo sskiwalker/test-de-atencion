@@ -695,6 +695,19 @@
     ['#r-pres', '#r-fps'].forEach(id => { $(id).oninput = programarReco; });
     ['#r-moneda', '#r-res', '#r-preset', '#r-actuales'].forEach(id => { $(id).onchange = programarReco; });
 
+    // Temporal: selector de identidad visual mientras se elige una.
+    const pintaEstilo = e => {
+      if (e) document.documentElement.dataset.estilo = e;
+      else document.documentElement.removeAttribute('data-estilo');
+      $$('#elige button').forEach(b => b.classList.toggle('on', (b.dataset.estilo || '') === e));
+      try { localStorage.setItem(LS + '-estilo', e); } catch (err) {}
+    };
+    $$('#elige button').forEach(b => { b.onclick = () => pintaEstilo(b.dataset.estilo || ''); });
+    let estiloGuardado = '';
+    try { estiloGuardado = localStorage.getItem(LS + '-estilo') || ''; } catch (err) {}
+    const enUrl = (location.hash.match(/estilo=([a-z]*)/) || [])[1];
+    pintaEstilo(enUrl !== undefined ? enUrl : estiloGuardado);
+
     $$('[data-ir]').forEach(a => { a.onclick = ev => { ev.preventDefault(); irA(a.dataset.ir); }; });
     vigilarSecciones();
     let tRedim = null;

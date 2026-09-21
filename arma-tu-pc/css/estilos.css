@@ -1,0 +1,160 @@
+/* ===========================================================================
+   estilos.css — Identidades visuales alternativas, para elegir una.
+
+   Cada bloque redefine las variables de color y unas pocas reglas de forma.
+   El HTML y el JavaScript no cambian: solo cambia la piel.
+
+   Nota: las variantes fijan su propia paleta y no responden al botón de
+   tema claro/oscuro. Cuando se elija una, se le hace su versión clara.
+
+   Sin tipografías externas: solo pilas de sistema, para que la página siga
+   funcionando sin conexión y dentro del navegador de WhatsApp.
+   =========================================================================== */
+
+/* ============================== A · CONSOLA ============================== */
+html[data-estilo="consola"] {
+  --bg:#080b0a; --bg2:#0d1210; --bg3:#131a17; --linea:#1f2a24;
+  --txt:#d6e4da; --txt2:#8fa89a; --txt3:#617467;
+  --acc:#3ddc84; --acc2:#5ad1e0; --warn:#e0b341; --err:#ff6b6b; --est:#b48ef0;
+  --n5:#5ad1e0; --n4:#3ddc84; --n3:#9fd356; --n2:#e0b341; --n1:#e88b3d; --n0:#ff6b6b;
+  --acc-suave:rgba(61,220,132,.10); --destello:rgba(90,209,224,.22);
+  --r:0px; --sombra:none;
+}
+html[data-estilo="consola"] body,
+html[data-estilo="consola"] select,
+html[data-estilo="consola"] input,
+html[data-estilo="consola"] button { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+html[data-estilo="consola"] body { background-image: none; }
+html[data-estilo="consola"] h1,
+html[data-estilo="consola"] .card h2,
+html[data-estilo="consola"] .titulo-seccion { text-transform: uppercase; letter-spacing: .08em; }
+html[data-estilo="consola"] h1 { font-size: 19px; }
+html[data-estilo="consola"] .card { border-radius: 0; box-shadow: none; }
+html[data-estilo="consola"] .card h2::before { content: "// "; color: var(--acc); }
+html[data-estilo="consola"] .chip,
+html[data-estilo="consola"] .badge,
+html[data-estilo="consola"] .nivel-op,
+html[data-estilo="consola"] button.btn,
+html[data-estilo="consola"] select,
+html[data-estilo="consola"] input { border-radius: 0; }
+html[data-estilo="consola"] .chip::before { content: "["; opacity:.5; margin-right:4px; }
+html[data-estilo="consola"] .chip::after  { content: "]"; opacity:.5; margin-left:4px; }
+html[data-estilo="consola"] th { border-bottom: 1px solid var(--acc); color: var(--acc); }
+html[data-estilo="consola"] td { border-bottom: 1px dotted var(--linea); }
+html[data-estilo="consola"] .barra { border-radius: 0; }
+html[data-estilo="consola"] .barra > i { border-radius: 0; }
+html[data-estilo="consola"] .resumen { border-bottom: 1px solid var(--acc); }
+
+/* ============================= B · EDITORIAL ============================= */
+html[data-estilo="editorial"] {
+  --bg:#f7f4ee; --bg2:#fffdf9; --bg3:#efeae0; --linea:#ddd6c8;
+  --txt:#191713; --txt2:#5b544a; --txt3:#8b8275;
+  --acc:#1c6b45; --acc2:#1f5c8b; --warn:#9a6212; --err:#a32b2b; --est:#6b4fa8;
+  --n5:#1f5c8b; --n4:#1c6b45; --n3:#4e7a1f; --n2:#9a6212; --n1:#b2541d; --n0:#a32b2b;
+  --acc-suave:rgba(28,107,69,.08); --destello:rgba(31,92,139,.14);
+  --r:3px; --sombra:none;
+}
+html[data-estilo="editorial"] h1,
+html[data-estilo="editorial"] .card h2,
+html[data-estilo="editorial"] .titulo-seccion,
+html[data-estilo="editorial"] .clase .big,
+html[data-estilo="editorial"] .nivel-op b {
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  font-weight: 600; letter-spacing: -.01em;
+}
+html[data-estilo="editorial"] h1 { font-size: 27px; }
+html[data-estilo="editorial"] .card h2 { font-size: 18px; }
+html[data-estilo="editorial"] .card {
+  border: 0; border-top: 2px solid var(--txt); border-radius: 0;
+  padding: 18px 0 22px; background: none; box-shadow: none;
+}
+html[data-estilo="editorial"] .card + .card { margin-top: 26px; }
+html[data-estilo="editorial"] .split { gap: 34px; }
+html[data-estilo="editorial"] .aviso { background: none; border: 0; border-left: 3px solid var(--warn); border-radius: 0; }
+html[data-estilo="editorial"] .fps { font-weight: 600; }
+html[data-estilo="editorial"] th { border-bottom: 1px solid var(--txt); color: var(--txt2); }
+html[data-estilo="editorial"] tbody tr:hover { background: var(--bg3); }
+html[data-estilo="editorial"] .resumen { background: var(--bg2); border-bottom: 2px solid var(--txt); }
+html[data-estilo="editorial"] .res-cell,
+html[data-estilo="editorial"] .clase { background: none; border: 0; border-left: 2px solid var(--linea); border-radius: 0; }
+html[data-estilo="editorial"] .nivel-sel { border: 0; border-top: 2px solid var(--txt); }
+html[data-estilo="editorial"] .nivel-op { background: none; border-color: var(--linea); }
+
+/* ============================== C · ARCADE ============================== */
+html[data-estilo="arcade"] {
+  --bg:#0a0713; --bg2:#141029; --bg3:#1c1738; --linea:#2c2452;
+  --txt:#f0ecff; --txt2:#a49bd0; --txt3:#6f66a0;
+  --acc:#ff3d81; --acc2:#23e0ff; --warn:#ffc531; --err:#ff5470; --est:#c08bff;
+  --n5:#23e0ff; --n4:#3dffa8; --n3:#b6ff3d; --n2:#ffc531; --n1:#ff8a3d; --n0:#ff5470;
+  --acc-suave:rgba(255,61,129,.12); --destello:rgba(35,224,255,.26);
+  --r:14px; --sombra:0 6px 24px rgba(0,0,0,.45);
+}
+html[data-estilo="arcade"] body {
+  background-image:
+    radial-gradient(760px 420px at 12% -8%, rgba(255,61,129,.16), transparent 68%),
+    radial-gradient(700px 400px at 92% 4%, rgba(35,224,255,.13), transparent 66%);
+  background-attachment: fixed;
+}
+html[data-estilo="arcade"] h1,
+html[data-estilo="arcade"] .clase .big,
+html[data-estilo="arcade"] .titulo-seccion { font-weight: 800; letter-spacing: -.03em; }
+html[data-estilo="arcade"] h1 { font-size: 26px; }
+html[data-estilo="arcade"] h1 span { color: var(--acc); }
+html[data-estilo="arcade"] .card { border-radius: 16px; }
+html[data-estilo="arcade"] .card h2 { text-transform: uppercase; letter-spacing: .09em; font-size: 12.5px; color: var(--txt2); }
+html[data-estilo="arcade"] .fps { text-shadow: 0 0 18px currentColor; }
+html[data-estilo="arcade"] .clase .big { text-shadow: 0 0 26px currentColor; }
+html[data-estilo="arcade"] .barra { height: 8px; border-radius: 4px; }
+html[data-estilo="arcade"] .barra > i { box-shadow: 0 0 12px currentColor; }
+html[data-estilo="arcade"] button.btn { background: linear-gradient(95deg, #ff3d81, #ff7a3d); color: #fff; border-radius: 999px; }
+html[data-estilo="arcade"] .chip.on,
+html[data-estilo="arcade"] .nivel-op.on { background: linear-gradient(95deg, rgba(255,61,129,.30), rgba(35,224,255,.22)); color: var(--txt); }
+html[data-estilo="arcade"] .chip.on { color: #fff; }
+html[data-estilo="arcade"] .nivel-op.on b { color: var(--acc2); }
+html[data-estilo="arcade"] .tab.on { border-bottom-color: var(--acc); }
+html[data-estilo="arcade"] .resumen { background: rgba(20,16,41,.92); backdrop-filter: blur(8px); }
+
+/* ============================= D · FICHA TÉCNICA ========================= */
+html[data-estilo="ficha"] {
+  --bg:#17181a; --bg2:#1e2023; --bg3:#26292d; --linea:#33373c;
+  --txt:#e8e6e1; --txt2:#a29d94; --txt3:#726d65;
+  --acc:#f0a53f; --acc2:#6fb2d2; --warn:#f0a53f; --err:#e06a5a; --est:#a893c9;
+  --n5:#6fb2d2; --n4:#8ab661; --n3:#b3b358; --n2:#f0a53f; --n1:#e0855a; --n0:#e06a5a;
+  --acc-suave:rgba(240,165,63,.10); --destello:rgba(240,165,63,.20);
+  --r:3px; --sombra:none;
+}
+html[data-estilo="ficha"] .card { border-radius: 3px; border-color: var(--linea); }
+html[data-estilo="ficha"] .card h2,
+html[data-estilo="ficha"] .titulo-seccion,
+html[data-estilo="ficha"] label.f > span,
+html[data-estilo="ficha"] .resumen-it .k {
+  text-transform: uppercase; letter-spacing: .1em; font-size: 11px; color: var(--txt2);
+}
+html[data-estilo="ficha"] .card h2 { padding-bottom: 8px; border-bottom: 2px solid var(--acc); display: inline-block; }
+html[data-estilo="ficha"] .titulo-seccion { font-size: 12px; }
+html[data-estilo="ficha"] h1 { font-size: 20px; letter-spacing: .02em; }
+html[data-estilo="ficha"] tbody tr:nth-child(odd) { background: rgba(255,255,255,.022); }
+html[data-estilo="ficha"] th { background: var(--bg3); border-bottom: 2px solid var(--acc); color: var(--txt2); }
+html[data-estilo="ficha"] .chip, html[data-estilo="ficha"] .badge { border-radius: 3px; }
+html[data-estilo="ficha"] button.btn, html[data-estilo="ficha"] select,
+html[data-estilo="ficha"] input, html[data-estilo="ficha"] .nivel-op { border-radius: 3px; }
+html[data-estilo="ficha"] .res-cell { border-radius: 3px; border-left: 3px solid var(--acc); }
+html[data-estilo="ficha"] .clase { border-radius: 3px; border-left: 3px solid var(--acc); }
+html[data-estilo="ficha"] .barra { border-radius: 2px; }
+html[data-estilo="ficha"] .barra > i { border-radius: 2px; }
+
+/* ===================== selector temporal de estilos ====================== */
+.elige {
+  position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%);
+  display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center;
+  background: var(--bg2); border: 1px solid var(--linea); border-radius: 999px;
+  padding: 7px 10px; box-shadow: 0 8px 30px rgba(0,0,0,.4); z-index: 60; max-width: calc(100vw - 20px);
+}
+.elige > span { font-size: 11.5px; color: var(--txt3); padding: 0 6px; }
+.elige button {
+  background: none; border: 1px solid transparent; color: var(--txt2); border-radius: 999px;
+  padding: 6px 12px; font-size: 13px; cursor: pointer; font-family: inherit; white-space: nowrap;
+}
+.elige button:hover { color: var(--txt); }
+.elige button.on { background: var(--acc); border-color: var(--acc); color: #fff; font-weight: 600; }
+@media (max-width: 620px) { .elige { bottom: 8px; padding: 6px; } .elige > span { display: none; } .elige button { padding: 6px 9px; font-size: 12px; } }
